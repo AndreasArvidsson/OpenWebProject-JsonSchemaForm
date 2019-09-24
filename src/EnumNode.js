@@ -4,6 +4,8 @@ import ValidationIcon from "./ValidationIcon";
 import RemoveIcon from "./RemoveIcon";
 import Util from "./Util";
 
+const nullText = "selectNull";
+
 const EnumNode = ({ value, path, schemaNode, updateModel, errors, removable, removePath, autoFocus, getText }) => {
     const onChange = (path, value) => {
         updateModel(path, value === "" ? null : value);
@@ -41,7 +43,7 @@ export default EnumNode;
 
 const EnumOptions = ({ value, schemaNode, getText }) => {
     const getDefaultNullOption = () => {
-        return <option key={null} value={null}>{getText("selectNull")}</option>;
+        return <option key={null} value={null}>{getText(nullText)}</option>;
     };
     let nullOptionAdded = false;
     let options;
@@ -63,7 +65,7 @@ const EnumOptions = ({ value, schemaNode, getText }) => {
                 nullOptionAdded = true;
                 return (
                     <option key={oneOf.const} value={oneOf.const} title={oneOf.description}>
-                        {oneOf.title || getText("selectNull")}
+                        {oneOf.title || getText(nullText)}
                     </option>
                 );
             }

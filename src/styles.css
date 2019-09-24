@@ -5,11 +5,18 @@
  
 /* Add margin so panel doesnt collide with input rows */
 .json-schema-form .row + .panel {
-    margin-top: 20px;
+    margin-top: 15px;
+}
+
+/* Vertical margin betweens input elements */
+.json-schema-form .row + .row,
+.json-schema-form .input-group + .input-group {
+    margin-top: 4px;
 }
 
 /* No left border after input */
-.json-schema-form .input-group > input + .input-group-addon {
+.json-schema-form .input-group > input + .input-group-addon,
+.json-schema-form .input-group > select + .input-group-addon {
     border-left: 0;
 }
 
@@ -61,8 +68,8 @@
 }
 
 /* Style focus event on inputs and buttons */
-.json-schema-form .input-group-btn > button:focus,
-.json-schema-form .input-group input:focus {
+.json-schema-form button:focus,
+.json-schema-form input:focus {
     border-color: #66afe9;
     outline: 0;
     -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, 0.6);

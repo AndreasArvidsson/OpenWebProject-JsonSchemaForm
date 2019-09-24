@@ -1,13 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import Util from "./Util";
-import Title from "./Title";
 import ValidationIcon from "./ValidationIcon";
 import AddIcon from "./AddIcon";
 import RemoveIcon from "./RemoveIcon";
 import BadgeIcon from "./BadgeIcon";
+import ObjectTitle from "./ObjectTitle";
 
 const ArrayNode = ({ value, path, schemaNode, removable, fieldName, renderNode, getNew, updateModel, removePath, errors }) => {
+    const [show, setShow] = useState(true);
     const addNew = () => updateModel(path, getNew(schemaNode));
     const addNewChild = () => updateModel(Util.updatePath(path, value.length), getNew(schemaNode.items));
 
@@ -21,7 +22,7 @@ const ArrayNode = ({ value, path, schemaNode, removable, fieldName, renderNode, 
             <div className="panel-heading">
                 <span className="input-group">
                     <span className="panel-title">
-                        <Title schemaNode={schemaNode} fieldName={fieldName} />
+                        <ObjectTitle disabled={!value} show={show} setShow={setShow} schemaNode={schemaNode} fieldName={fieldName} />
                     </span>
                     {value &&
                         <React.Fragment>
@@ -35,7 +36,7 @@ const ArrayNode = ({ value, path, schemaNode, removable, fieldName, renderNode, 
                 </span>
             </div>
 
-            {value &&
+            {(value && show) &&
                 <div className="panel-body">
                     {value.map((v, i) => {
                         const p = Util.updatePath(path, i);

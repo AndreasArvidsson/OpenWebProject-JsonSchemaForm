@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import Util from "./Util";
 import Title from "./Title";
 import ValidationIcon from "./ValidationIcon";
 import AddIcon from "./AddIcon";
 import RemoveIcon from "./RemoveIcon";
+// import ChevronIcon from "./ChevronIcon";
+import ObjectTitle from "./ObjectTitle";
 
 const ObjectNode = ({ value, path, schemaNode, removable, fieldName, renderNode, getNew, updateModel, removePath, errors, updateRef }) => {
+    const [show, setShow] = useState(true);
     const addNew = () => updateModel(path, getNew(schemaNode));
 
     const getContent = (autoFocus) => {
@@ -37,15 +40,13 @@ const ObjectNode = ({ value, path, schemaNode, removable, fieldName, renderNode,
         <div className={"panel panel-" + (value ? "default" : "warning")}>
             <div className="panel-heading">
                 <span className="input-group">
-                    <span className="panel-title">
-                        <Title schemaNode={schemaNode} fieldName={fieldName} />
-                    </span>
+                    <ObjectTitle disabled={!value} show={show} setShow={setShow} schemaNode={schemaNode} fieldName={fieldName} />
                     <ValidationIcon errors={errors} />
                     {(!value && !removable) && <AddIcon onClick={addNew} />}
                     {removable && <RemoveIcon path={path} onClick={removePath} />}
                 </span>
             </div>
-            {value &&
+            {(value && show) &&
                 <div className="panel-body">
                     {getContent(0)}
                 </div>
