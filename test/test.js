@@ -145,7 +145,7 @@ const onRender = {
     //     console.log("all");
     // },
     "optionalArray": function (props, defaultRender) {
-        console.log(props);
+        // console.log(props);
         return defaultRender(props);
     }
 };
@@ -158,6 +158,7 @@ const App = () => {
     // eslint-disable-next-line
     const onChange = (newModel, errors, path, newValue) => {
         // console.log(newModel, errors, path, newValue);
+        // console.log(newModel);
         setModel(newModel);
     }
 
