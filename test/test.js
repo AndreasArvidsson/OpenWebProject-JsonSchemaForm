@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import ReactDOM from "react-dom";
-import JsonSchemaForm from "../index.js";
+import JsonSchemaForm from "../src/index.js";
 import "bootstrap/dist/css/bootstrap.css";
 
 console.log("test.js")
@@ -133,10 +133,14 @@ const schema = {
             "title": "Optional array",
             "description": "This array is optional",
             "items": {
-                "type": "string, null"
+                "type": "object, null",
+                "properties": {
+                    "value": {
+                        "type": "string, null",
+                    }
+                }
             }
-        },
-
+        }
     }
 };
 
@@ -152,7 +156,9 @@ const onRender = {
 
 const App = () => {
     const [model, setModel] = useState({
-        requiredArray: null
+        //requiredArray: null,
+        requiredArray: [""],
+        optionalArray: [{}]
     });
 
     // eslint-disable-next-line

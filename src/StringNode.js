@@ -3,31 +3,34 @@ import PropTypes from "prop-types";
 import ValidationIcon from "./ValidationIcon";
 import RemoveIcon from "./RemoveIcon";
 
-const IntegerInput = ({ value, path, onChange, errors, remove, onRemove, autoFocus }) => {
+const StringNode = ({ value, path, updateModel, errors, removable, removePath, autoFocus }) => {
+    const onChange = (path, value) => {
+        updateModel(path, value === "" ? null : value);
+    } 
     if (value === null || value === undefined) {
         value = "";
     }
     return (
         <div className="input-group">
             <input
-                type="number"
+                type="text"
                 className="form-control"
                 onChange={e => onChange(path, e.target.value)}
                 value={value}
                 autoFocus={autoFocus}
             />
             <ValidationIcon errors={errors} />
-            {remove && <RemoveIcon path={path} onClick={onRemove} />}
+            {removable && <RemoveIcon path={path} onClick={removePath} />}
         </div>
     );
-}
-IntegerInput.propTypes = {
-    value: PropTypes.number,
+};
+StringNode.propTypes = {
+    value: PropTypes.string,
     path: PropTypes.string.isRequired,
-    onChange: PropTypes.func.isRequired,
-    errors: PropTypes.array,
-    remove: PropTypes.bool,
-    onRemove: PropTypes.func.isRequired,
+    updateModel: PropTypes.func.isRequired,
+    errors: PropTypes.arrayOf(PropTypes.string),
+    removable: PropTypes.bool,
+    removePath: PropTypes.func.isRequired,
     autoFocus: PropTypes.bool
 };
-export default IntegerInput;
+export default StringNode;

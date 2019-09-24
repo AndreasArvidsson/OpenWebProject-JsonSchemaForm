@@ -15,8 +15,8 @@ const ValidationIcon = ({ errors }) => {
             <Glyph type="ok-circle" style={{ color: "green" }} title="Validation is ok" />
         </span>
     );
-}
+};
 ValidationIcon.propTypes = {
-    errors: PropTypes.array
+    errors: PropTypes.arrayOf(PropTypes.string)
 };
 export default React.memo(ValidationIcon);

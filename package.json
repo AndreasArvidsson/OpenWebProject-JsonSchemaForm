@@ -2,7 +2,7 @@
     "name": "owp.json-schema-form",
     "description": "Json schema form for React",
     "version": "1.0.0",
-    "main": "index.js",
+    "main": "src/index.js",
     "scripts": {
         "start": "webpack-dev-server --config test/webpack.config.js --port 9090 --open"
     },
@@ -27,7 +27,6 @@
         "owp.glyphicons": "^1.0.3",
         "react": "^16.9.0",
         "jsonschema": "^1.2.4",
-        "uuid": "^3.3.3",
         "lodash.get": "^4.4.2",
         "lodash.set": "^4.3.2"
     },

@@ -4,50 +4,50 @@ import ValidationIcon from "./ValidationIcon";
 import RemoveIcon from "./RemoveIcon";
 import Util from "./Util";
 
-const BoolInput = ({ value, path, schemaNode, onChange, errors, remove, onRemove, autoFocus, getText }) => {
+const BoolNode = ({ value, path, schemaNode, updateModel, errors, removable, removePath, autoFocus, getText }) => {
     return (
         <div className="input-group">
-            <label>
+            <label className="radio-inline">
                 <input
                     type="radio"
                     checked={value === false}
-                    onChange={() => onChange(path, false)}
+                    onChange={() => updateModel(path, false)}
                     autoFocus={autoFocus}
                 />
                 {getText("boolYes")}
             </label>
-            <label>
+            <label className="radio-inline">
                 <input
                     type="radio"
                     checked={value === true}
-                    onChange={() => onChange(path, true)}
+                    onChange={() => updateModel(path, true)}
                 />
                 {getText("boolNo")}
             </label>
             {Util.isNullable(schemaNode) &&
-                <label>
+                <label className="radio-inline">
                     <input
                         type="radio"
                         checked={value === null || value === undefined}
-                        onChange={() => onChange(path, null)}
+                        onChange={() => updateModel(path, null)}
                     />
                     {getText("boolNull")}
                 </label>
             }
             <ValidationIcon errors={errors} />
-            {remove && <RemoveIcon path={path} onClick={onRemove} />}
+            {removable && <RemoveIcon path={path} onClick={removePath} />}
         </div>
     );
-}
-BoolInput.propTypes = {
+};
+BoolNode.propTypes = {
     value: PropTypes.bool,
     path: PropTypes.string.isRequired,
     schemaNode: PropTypes.object.isRequired,
-    onChange: PropTypes.func.isRequired,
-    errors: PropTypes.array,
-    remove: PropTypes.bool,
-    onRemove: PropTypes.func.isRequired,
+    updateModel: PropTypes.func.isRequired,
+    errors: PropTypes.arrayOf(PropTypes.string),
+    removable: PropTypes.bool,
+    removePath: PropTypes.func.isRequired,
     autoFocus: PropTypes.bool,
     getText: PropTypes.func.isRequired
 };
-export default BoolInput;
+export default BoolNode;

@@ -11,9 +11,12 @@ const Title = ({ schemaNode, fieldName }) => {
             }
         </React.Fragment>
     );
-}
+};
 Title.propTypes = {
-    schemaNode: PropTypes.object.isRequired,
-    fieldName: PropTypes.string.isRequired
+    fieldName: PropTypes.string.isRequired,
+    schemaNode: PropTypes.shape({
+        title: PropTypes.string,
+        description: PropTypes.string
+    }).isRequired
 };
 export default React.memo(Title);

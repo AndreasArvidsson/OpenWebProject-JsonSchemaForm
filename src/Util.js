@@ -99,4 +99,4 @@ const getErrorPath = (error) => {
         path += "." + error.argument;
     }
     return path.substring(9);
-}
+};
