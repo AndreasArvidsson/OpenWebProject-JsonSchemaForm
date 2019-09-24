@@ -39,7 +39,7 @@ EnumNode.propTypes = {
 };
 export default EnumNode;
 
-const EnumOptions = ({value, schemaNode, getText}) => {
+const EnumOptions = ({ value, schemaNode, getText }) => {
     const getDefaultNullOption = () => {
         return <option key={null} value={null}>{getText("selectNull")}</option>;
     };
@@ -61,6 +61,11 @@ const EnumOptions = ({value, schemaNode, getText}) => {
         options = schemaNode.oneOf.map(oneOf => {
             if (oneOf.const === null) {
                 nullOptionAdded = true;
+                return (
+                    <option key={oneOf.const} value={oneOf.const} title={oneOf.description}>
+                        {oneOf.title || getText("selectNull")}
+                    </option>
+                );
             }
             return (
                 <option key={oneOf.const} value={oneOf.const} title={oneOf.description}>
