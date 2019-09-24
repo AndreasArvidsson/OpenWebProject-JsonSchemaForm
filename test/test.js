@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import ReactDOM from "react-dom";
 import JsonSchemaForm from "../index.js";
 import "bootstrap/dist/css/bootstrap.css";
@@ -139,14 +139,32 @@ const schema = {
 
     }
 };
-const model = {
-    requiredArray: null
-};
+
+const App = () => {
+    const [model, setModel] = useState({
+        requiredArray: null
+    });
+
+    // eslint-disable-next-line
+    const onChange = (newModel, errors, path, newValue) => {
+        // console.log(newModel, errors, path, newValue);
+        setModel(newModel);
+    }
+
+    return (
+        <JsonSchemaForm
+            schema={schema}
+            model={model}
+            texts={{ boolYes: "Okay" }}
+            onChange={onChange}
+        />
+    );
+}
 
 ReactDOM.render(
     <div>
         <h1>Test</h1>
-        <JsonSchemaForm schema={schema} model={model} texts={{ boolYes: "Okay" }} />
+        <App />
     </div>,
     document.getElementById("root")
 );

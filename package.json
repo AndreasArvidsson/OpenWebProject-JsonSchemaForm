@@ -47,8 +47,8 @@
         "eslint": "latest",
         "eslint-plugin-react": "latest",
         "babel-eslint": "latest",
+        "mini-css-extract-plugin": "latest",
         "react-dom": "^16.9.0",
-        "bootstrap": "^3.3.7",
-        "mini-css-extract-plugin": "^0.8.0"
+        "bootstrap": "^3.3.7"
     }
 }

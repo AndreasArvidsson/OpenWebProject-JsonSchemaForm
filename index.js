@@ -21,9 +21,16 @@ const defaultTexts = {
     selectNull: "Choose"
 };
 
-const JsonSchemaForm = ({ schema, model, texts = {} }) => {
-    const [copy, setCopy] = useState(model);
-    const [errors, setErrors] = useState({});
+const JsonSchemaForm = ({ schema, model, onChange, texts = {} }) => {
+    const [errors, setErrors] = useState();
+
+    useEffect(() => {
+        const newErrors = getErrors(model);
+        if (onChange) {
+            onChange(model, newErrors);
+        }
+        setErrors(newErrors);
+    }, [model]);
 
     const updateRef = (schemaNode) => {
         if (schemaNode["$ref"]) {
@@ -50,8 +57,8 @@ const JsonSchemaForm = ({ schema, model, texts = {} }) => {
         }
     }
 
-    useEffect(() => {
-        const errors = jsonSchema.validate(copy, schema).errors;
+    function getErrors (newCopy) {
+        const errors = jsonSchema.validate(newCopy, schema).errors;
         const res = {};
         errors.forEach(error => {
             const path = getErrorPath(error);
@@ -60,44 +67,22 @@ const JsonSchemaForm = ({ schema, model, texts = {} }) => {
             }
             res[path].push(error.message.capitalizeFirst());
         });
-        setErrors(res);
-    }, [copy]);
+        return res;
+    }
 
-    const onChange = (path, value) => {
-        const newCopy = { ...copy };
+    const updateCopy = (path, value) => {
+        const newCopy = { ...model };
         _set(newCopy, path, value);
-        setCopy(newCopy);
-    }
-
-    const onChangeString = (path, value) => {
-        if (value === "") {
-            onChange(path, null);
-        }
-        else {
-            onChange(path, value);
-        }
-    }
-
-    const onChangeNumber = (path, value) => {
-        if (value === "") {
-            onChange(path, null);
-        }
-        else {
-            onChange(path, Number.parseFloat(value));
-        }
-    }
-
-    const onChangeInteger = (path, value) => {
-        if (value === "") {
-            onChange(path, null);
-        }
-        else {
-            onChange(path, Number.parseInt(value));
+        const newErrors = getErrors(newCopy);
+        // setCopy(newCopy);
+        setErrors(newErrors);
+        if (onChange) {
+            onChange(newCopy, newErrors, path, value);
         }
     }
 
     const onRemove = (path) => {
-        const newCopy = { ...copy };
+        const newCopy = { ...model };
         //Array item.
         if (path.endsWith("]")) {
             const i = path.lastIndexOf("[");
@@ -109,7 +94,39 @@ const JsonSchemaForm = ({ schema, model, texts = {} }) => {
         else {
             _unset(newCopy, path);
         }
-        setCopy(newCopy);
+        const newErrors = getErrors(newCopy);
+        if (onChange) {
+            onChange(newCopy, newErrors, path);
+        }
+        // setCopy(newCopy);
+        setErrors(newErrors);
+    }
+
+    const onChangeString = (path, value) => {
+        if (value === "") {
+            updateCopy(path, null);
+        }
+        else {
+            updateCopy(path, value);
+        }
+    }
+
+    const onChangeNumber = (path, value) => {
+        if (value === "") {
+            updateCopy(path, null);
+        }
+        else {
+            updateCopy(path, Number.parseFloat(value));
+        }
+    }
+
+    const onChangeInteger = (path, value) => {
+        if (value === "") {
+            updateCopy(path, null);
+        }
+        else {
+            updateCopy(path, Number.parseInt(value));
+        }
     }
 
     const getValidationIcon = (path) => {
@@ -149,7 +166,7 @@ const JsonSchemaForm = ({ schema, model, texts = {} }) => {
     const renderObject = ({ value, path, schemaNode, remove, fieldName }) => {
 
         const addNew = () => {
-            onChange(path, getNew(schemaNode));
+            updateCopy(path, getNew(schemaNode));
         }
 
         const getContent = (autoFocus) => {
@@ -240,10 +257,10 @@ const JsonSchemaForm = ({ schema, model, texts = {} }) => {
 
     const renderArray = ({ value, path, schemaNode, remove, fieldName }) => {
         const addNew = () => {
-            onChange(path, getNew(schemaNode));
+            updateCopy(path, getNew(schemaNode));
         }
         const addNewChild = () => {
-            onChange(path + "[" + value.length + "]", getNew(schemaNode.items));
+            updateCopy(path + "[" + value.length + "]", getNew(schemaNode.items));
         }
         if (!remove) {
             remove = value && isNullable(schemaNode);
@@ -435,7 +452,7 @@ const JsonSchemaForm = ({ schema, model, texts = {} }) => {
                     <input
                         type="radio"
                         checked={value === false}
-                        onChange={() => onChange(path, false)}
+                        onChange={() => updateCopy(path, false)}
                         autoFocus={autoFocus}
                     />
                     {getText("boolYes")}
@@ -444,7 +461,7 @@ const JsonSchemaForm = ({ schema, model, texts = {} }) => {
                     <input
                         type="radio"
                         checked={value === true}
-                        onChange={() => onChange(path, true)}
+                        onChange={() => updateCopy(path, true)}
                     />
                     {getText("boolNo")}
                 </label>
@@ -453,7 +470,7 @@ const JsonSchemaForm = ({ schema, model, texts = {} }) => {
                         <input
                             type="radio"
                             checked={value === null || value === undefined}
-                            onChange={() => onChange(path, null)}
+                            onChange={() => updateCopy(path, null)}
                         />
                         {getText("boolNull")}
                     </label>
@@ -503,15 +520,19 @@ const JsonSchemaForm = ({ schema, model, texts = {} }) => {
         schemaNode: PropTypes.object.isRequired
     };
 
+    if (!errors) {
+        return null;
+    }
     return (
         <div className="json-schema-form">
-            {renderNode({ value: copy, schemaNode: schema })}
+            {renderNode({ value: model, schemaNode: schema })}
         </div>
     );
 };
 JsonSchemaForm.propTypes = {
     schema: PropTypes.object.isRequired,
     model: PropTypes.object.isRequired,
+    onChange: PropTypes.func.isRequired,
     onRender: PropTypes.func,
     texts: PropTypes.object
 };
