@@ -1,0 +1,54 @@
+{
+    "name": "owp.json-schema-form",
+    "description": "Json schema form for React",
+    "version": "1.0.0",
+    "main": "index.js",
+    "scripts": {
+        "start": "webpack-dev-server --config test/webpack.config.js --port 9090 --open"
+    },
+    "keywords": [
+        "json schema form",
+        "json",
+        "schema form",
+        "Open Web Project",
+        "owp"
+    ],
+    "author": "Andreas Arvidsson",
+    "license": "MIT",
+    "homepage": "https://github.com/AndreasArvidsson/OpenWebProject-JsonSchemaForm",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/AndreasArvidsson/OpenWebProject-JsonSchemaForm.git"
+    },
+    "bugs": {
+        "url": "https://github.com/AndreasArvidsson/OpenWebProject-JsonSchemaForm/issues"
+    },
+    "dependencies": {
+        "owp.glyphicons": "^1.0.3",
+        "react": "^16.9.0",
+        "jsonschema": "^1.2.4",
+        "uuid": "^3.3.3",
+        "lodash.get": "^4.4.2",
+        "lodash.set": "^4.3.2",
+        "lodash.unset": "^4.5.2"
+    },
+    "devDependencies": {
+        "webpack": "latest",
+        "webpack-cli": "latest",
+        "webpack-dev-server": "latest",
+        "html-webpack-plugin": "latest",
+        "babel-loader": "latest",
+        "@babel/core": "latest",
+        "@babel/preset-env": "latest",
+        "@babel/preset-react": "latest",
+        "css-loader": "latest",
+        "file-loader": "latest",
+        "eslint-loader": "latest",
+        "eslint": "latest",
+        "eslint-plugin-react": "latest",
+        "babel-eslint": "latest",
+        "react-dom": "^16.9.0",
+        "bootstrap": "^3.3.7",
+        "mini-css-extract-plugin": "^0.8.0"
+    }
+}

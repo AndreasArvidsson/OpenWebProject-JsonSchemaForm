@@ -1,0 +1,47 @@
+
+/* Add margin so panel doesnt collide with input rows */
+.json-schema-form .row + .panel {
+    margin-top: 20px;
+}
+
+/* Remove left border when input is followed by an group addon */
+.json-schema-form .input-group > input + .input-group-addon,
+.json-schema-form .input-group > select + .input-group-addon {
+    border-left: 0;
+}
+
+/* Add left border to bool label */
+.json-schema-form .input-group > label + .input-group-addon {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    border-left: 1px solid #ccc;
+} 
+
+/* Make sure the addons have only one border on each side */
+.json-schema-form .panel-heading > .input-group > .panel-title + .input-group-addon:nth-child(2) {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    border-left: 1px solid #ccc;
+}
+.json-schema-form .panel-heading > .input-group > .input-group-addon + .input-group-addon {
+    border-left: 0;
+} 
+
+/* Style action buttons */
+.json-schema-form .input-group-addon.clickable {
+    cursor: pointer;
+} 
+.json-schema-form .input-group-addon.clickable:hover {
+    filter: brightness(0.9);
+    -webkit-filter: brightness(0.9);
+}
+
+/* Margin between radio buttons and label */
+.json-schema-form .input-group input[type="radio"] {
+    margin-right: 2px;
+} 
+
+/* Margin between labels */
+.json-schema-form .input-group label + label {
+    margin-left: 10px;
+}
