@@ -21,7 +21,7 @@ const defaultTexts = {
     selectNull: "Choose"
 };
 
-const JsonSchemaForm = ({ schema, model, onChange, texts = {} }) => {
+const JsonSchemaForm = ({ schema, model, onChange, onRender = {}, texts = {} }) => {
     const [errors, setErrors] = useState();
 
     useEffect(() => {
@@ -488,16 +488,11 @@ const JsonSchemaForm = ({ schema, model, onChange, texts = {} }) => {
         autoFocus: PropTypes.bool
     };
 
-    const renderNode = (props) => {
-        //Follow reference
-        props.schemaNode = updateRef(props.schemaNode);
-        const type = getType(props.schemaNode);
-        // if (onRender) {
-        //     return onRender({...props, type})
-        // }
+    const defaultRenderNode = (props) => {
         if (props.schemaNode.enum || props.schemaNode.oneOf) {
             return renderEnum(props);
         }
+        const type = getType(props.schemaNode);
         switch (type) {
             case "object":
                 return renderObject(props);
@@ -515,10 +510,30 @@ const JsonSchemaForm = ({ schema, model, onChange, texts = {} }) => {
                 console.warn("unknown type ", props.schemaNode);
                 return <div>unknown type {type}</div>
         }
-    }
-    renderNode.propTypes = {
+    };
+    defaultRenderNode.propTypes = {
         schemaNode: PropTypes.object.isRequired
     };
+
+    /*eslint-disable */
+    const renderNode = (props) => {
+        //Follow reference
+        props.schemaNode = updateRef(props.schemaNode);
+
+        if (onRender[props.path]) {
+            return onRender[props.path](props, defaultRenderNode);
+        }
+        if (onRender[""]) {
+            return onRender[""](props, defaultRenderNode);
+        }
+        
+        return defaultRenderNode(props);
+    };
+    renderNode.propTypes = {
+        schemaNode: PropTypes.object.isRequired,
+        path: PropTypes.string.isRequired
+    };
+    /*eslint-enable */
 
     if (!errors) {
         return null;
@@ -533,7 +548,7 @@ JsonSchemaForm.propTypes = {
     schema: PropTypes.object.isRequired,
     model: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,
-    onRender: PropTypes.func,
+    onRender: PropTypes.object,
     texts: PropTypes.object
 };
 export default JsonSchemaForm;

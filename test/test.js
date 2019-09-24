@@ -140,6 +140,16 @@ const schema = {
     }
 };
 
+const onRender = {
+    // "": function () {
+    //     console.log("all");
+    // },
+    "optionalArray": function (props, defaultRender) {
+        console.log(props);
+        return defaultRender(props);
+    }
+};
+
 const App = () => {
     const [model, setModel] = useState({
         requiredArray: null
@@ -157,6 +167,7 @@ const App = () => {
             model={model}
             texts={{ boolYes: "Okay" }}
             onChange={onChange}
+            onRender={onRender}
         />
     );
 }
