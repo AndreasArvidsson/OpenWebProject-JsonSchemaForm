@@ -7,10 +7,10 @@ import RemoveIcon from "./RemoveIcon";
 import BadgeIcon from "./BadgeIcon";
 import ObjectTitle from "./ObjectTitle";
 
-const ArrayNode = ({ value, path, schemaNode, removable, fieldName, renderNode, getNew, updateModel, removePath, errors }) => {
+const ArrayNode = ({ value, path, schemaNode, removable, fieldName, renderNode, getNew, onChange, onRemove, error }) => {
     const [show, setShow] = useState(true);
-    const addNew = () => updateModel(path, getNew(schemaNode));
-    const addNewChild = () => updateModel(Util.updatePath(path, value.length), getNew(schemaNode.items));
+    const addNew = () => onChange(path, []);
+    const addNewChild = () => onChange(Util.updatePath(path, value.length), getNew(schemaNode.items));
 
     if (!removable) {
         removable = value && Util.isNullable(schemaNode);
@@ -30,9 +30,9 @@ const ArrayNode = ({ value, path, schemaNode, removable, fieldName, renderNode, 
                             <BadgeIcon value={value.length} />
                         </React.Fragment>
                     }
-                    <ValidationIcon errors={errors} />
+                    <ValidationIcon error={error} />
                     {(!value && !removable) && <AddIcon onClick={addNew} />}
-                    {removable && <RemoveIcon path={path} onClick={removePath} />}
+                    {removable && <RemoveIcon path={path} onClick={onRemove} />}
                 </span>
             </div>
 
@@ -46,7 +46,8 @@ const ArrayNode = ({ value, path, schemaNode, removable, fieldName, renderNode, 
                                 path: p,
                                 schemaNode: schemaNode.items,
                                 fieldName: i.toString(),
-                                removable: true
+                                removable: true,
+                                parentType: "array"
                             })}
                         </React.Fragment>
                     })}
@@ -64,8 +65,8 @@ ArrayNode.propTypes = {
     fieldName: PropTypes.string.isRequired,
     renderNode: PropTypes.func.isRequired,
     getNew: PropTypes.func.isRequired,
-    updateModel: PropTypes.func.isRequired,
-    removePath: PropTypes.func.isRequired,
-    errors: PropTypes.arrayOf(PropTypes.string)
+    onChange: PropTypes.func.isRequired,
+    onRemove: PropTypes.func.isRequired,
+    error: PropTypes.string
 };
 export default ArrayNode;

@@ -1,6 +1,8 @@
-import jsonSchema from "jsonschema";
+import "owp.core/string/replaceAll";
+import "owp.core/string/capitalizeFirst";
 import _get from "lodash.get";
 import _set from "lodash.set";
+
 const Util = {
 
     updateRef: function (schema, schemaNode) {
@@ -60,33 +62,31 @@ const Util = {
         }
     },
 
-    getErrors: function (model, schema) {
-        const errors = jsonSchema.validate(model, schema).errors;
+    parseJsonValidation: function (validation) {
         const res = {};
-        errors.forEach(error => {
+        validation.errors.forEach(error => {
             const path = getErrorPath(error);
-            if (!res[path]) {
-                res[path] = [];
+            const msg = error.message.capitalizeFirst();
+            if (res[path]) {
+                res[path] += "\n" + msg;
             }
-            res[path].push(error.message.capitalizeFirst());
+            res[path] = msg;
         });
         return res;
     },
 
     remove: function (model, path) {
-        const newModel = { ...model };
         //Array path.
         if (path.endsWith("]")) {
             const i = path.lastIndexOf("[");
             const parentPath = path.substring(0, i);
             const index = parseInt(path.substring(i + 1, path.length - 1));
-            _get(newModel, parentPath).splice(index, 1);
+            _get(model, parentPath).splice(index, 1);
         }
         //Object path
         else {
-            _set(newModel, path, null);
+            _set(model, path, null);
         }
-        return newModel;
     }
 
 };

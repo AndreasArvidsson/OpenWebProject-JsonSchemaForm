@@ -4,11 +4,11 @@ import ValidationIcon from "./ValidationIcon";
 import RemoveIcon from "./RemoveIcon";
 import Util from "./Util";
 
-const nullText = "selectNull";
+const defaultNullText = "Choose";
 
-const EnumNode = ({ value, path, schemaNode, updateModel, errors, removable, removePath, autoFocus, getText }) => {
-    const onChange = (path, value) => {
-        updateModel(path, value === "" ? null : value);
+const EnumNode = ({ value, path, schemaNode, onChange, onRemove, error, removable, autoFocus, texts = {} }) => {
+    const enumChanged = (e) => {
+        onChange(path, e.target.value === "" ? null : e.target.value);
     }
     if (value === null || value === undefined) {
         value = "";
@@ -18,13 +18,13 @@ const EnumNode = ({ value, path, schemaNode, updateModel, errors, removable, rem
             <select
                 className="form-control"
                 value={value}
-                onChange={e => onChange(path, e.target.value)}
+                onChange={enumChanged}
                 autoFocus={autoFocus}
             >
-                <EnumOptions value={value} schemaNode={schemaNode} getText={getText} />
+                <EnumOptions value={value} schemaNode={schemaNode} texts={texts} />
             </select>
-            <ValidationIcon errors={errors} />
-            {removable && <RemoveIcon path={path} onClick={removePath} />}
+            <ValidationIcon error={error} />
+            {removable && <RemoveIcon path={path} onClick={onRemove} />}
         </div>
     );
 };
@@ -32,18 +32,18 @@ EnumNode.propTypes = {
     value: PropTypes.string,
     path: PropTypes.string.isRequired,
     schemaNode: PropTypes.object.isRequired,
-    updateModel: PropTypes.func.isRequired,
-    errors: PropTypes.arrayOf(PropTypes.string),
+    onChange: PropTypes.func.isRequired,
+    error: PropTypes.string,
     removable: PropTypes.bool,
-    removePath: PropTypes.func.isRequired,
+    onRemove: PropTypes.func.isRequired,
     autoFocus: PropTypes.bool,
-    getText: PropTypes.func.isRequired
+    texts: PropTypes.object.isRequired
 };
 export default EnumNode;
 
-const EnumOptions = ({ value, schemaNode, getText }) => {
+const EnumOptions = ({ value, schemaNode, texts }) => {
     const getDefaultNullOption = () => {
-        return <option key={null} value={null}>{getText(nullText)}</option>;
+        return <option key={null} value={null}>{texts.selectNull || defaultNullText}</option>;
     };
     let nullOptionAdded = false;
     let options;
@@ -65,7 +65,7 @@ const EnumOptions = ({ value, schemaNode, getText }) => {
                 nullOptionAdded = true;
                 return (
                     <option key={oneOf.const} value={oneOf.const} title={oneOf.description}>
-                        {oneOf.title || getText(nullText)}
+                        {oneOf.title || texts.selectNull || defaultNullText}
                     </option>
                 );
             }
@@ -95,6 +95,6 @@ const schemaNode = PropTypes.shape({
 });
 EnumOptions.propTypes = {
     value: PropTypes.string.isRequired,
-    getText: PropTypes.func.isRequired,
+    texts: PropTypes.object.isRequired,
     schemaNode: schemaNode.isRequired
 };

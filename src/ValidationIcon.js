@@ -2,11 +2,11 @@ import React from "react";
 import PropTypes from "prop-types";
 import Glyph from "owp.glyphicons";
 
-const ValidationIcon = ({ errors }) => {
-    if (errors) {
+const ValidationIcon = ({ error }) => {
+    if (error) {
         return (
             <span className="input-group-addon">
-                <Glyph type="ban-circle" style={{ color: "red" }} title={errors.join("\n")} />
+                <Glyph type="ban-circle" style={{ color: "red" }} title={error} />
             </span>
         );
     }
@@ -17,6 +17,6 @@ const ValidationIcon = ({ errors }) => {
     );
 };
 ValidationIcon.propTypes = {
-    errors: PropTypes.arrayOf(PropTypes.string)
+    error: PropTypes.string
 };
 export default React.memo(ValidationIcon);

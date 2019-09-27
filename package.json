@@ -4,7 +4,7 @@
     "version": "1.0.0",
     "main": "src/index.js",
     "scripts": {
-        "start": "webpack-dev-server --config test/webpack.config.js --port 9090 --open"
+        "start": "webpack-dev-server --config test/webpack.config.js --port 9091 --open"
     },
     "keywords": [
         "json schema form",
@@ -24,7 +24,8 @@
         "url": "https://github.com/AndreasArvidsson/OpenWebProject-JsonSchemaForm/issues"
     },
     "dependencies": {
-        "owp.glyphicons": "^1.0.3",
+        "owp.glyphicons": "^1.1.0",
+        "owp.core": "^1.2.0",
         "react": "^16.9.0",
         "jsonschema": "^1.2.4",
         "lodash.get": "^4.4.2",

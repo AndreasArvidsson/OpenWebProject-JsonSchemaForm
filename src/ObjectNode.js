@@ -1,25 +1,28 @@
+import "owp.core/object/map";
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import Util from "./Util";
-import Title from "./Title";
 import ValidationIcon from "./ValidationIcon";
 import AddIcon from "./AddIcon";
 import RemoveIcon from "./RemoveIcon";
-// import ChevronIcon from "./ChevronIcon";
 import ObjectTitle from "./ObjectTitle";
 
-const ObjectNode = ({ value, path, schemaNode, removable, fieldName, renderNode, getNew, updateModel, removePath, errors, updateRef }) => {
+const ObjectNode = ({ value, path, schemaNode, removable, fieldName, renderNode, onChange, onRemove, error }) => {
     const [show, setShow] = useState(true);
-    const addNew = () => updateModel(path, getNew(schemaNode));
+    const addNew = () => onChange(path, {});
 
     const getContent = (autoFocus) => {
         return schemaNode.properties.map((schemaNode, fieldName) => {
-            return renderObjectField(renderNode, updateRef, {
-                value: value[fieldName],
-                path: Util.updatePath(path, fieldName),
-                autoFocus: autoFocus-- > 0,
-                schemaNode, fieldName
-            });
+            const p = Util.updatePath(path, fieldName);
+            return <React.Fragment key={p}>
+                {renderNode({
+                    value: value[fieldName],
+                    path: p,
+                    autoFocus: autoFocus-- > 0,
+                    schemaNode, fieldName,
+                    parentType: "object"
+                })}
+            </React.Fragment>
         })
     };
 
@@ -41,9 +44,9 @@ const ObjectNode = ({ value, path, schemaNode, removable, fieldName, renderNode,
             <div className="panel-heading">
                 <span className="input-group">
                     <ObjectTitle disabled={!value} show={show} setShow={setShow} schemaNode={schemaNode} fieldName={fieldName} />
-                    <ValidationIcon errors={errors} />
+                    <ValidationIcon error={error} />
                     {(!value && !removable) && <AddIcon onClick={addNew} />}
-                    {removable && <RemoveIcon path={path} onClick={removePath} />}
+                    {removable && <RemoveIcon path={path} onClick={onRemove} />}
                 </span>
             </div>
             {(value && show) &&
@@ -61,49 +64,8 @@ ObjectNode.propTypes = {
     schemaNode: PropTypes.object.isRequired,
     fieldName: PropTypes.string.isRequired,
     renderNode: PropTypes.func.isRequired,
-    getNew: PropTypes.func.isRequired,
-    updateModel: PropTypes.func.isRequired,
-    removePath: PropTypes.func.isRequired,
-    errors: PropTypes.arrayOf(PropTypes.string),
-    updateRef: PropTypes.func.isRequired
+    onChange: PropTypes.func.isRequired,
+    onRemove: PropTypes.func.isRequired,
+    error: PropTypes.string
 };
 export default ObjectNode;
-
-const renderObjectField = (renderNode, updateRef, props) => {
-    props.schemaNode = updateRef(props.schemaNode);
-    const node = renderNode(props);
-    if (Util.shouldAddRow(props.schemaNode)) {
-        return (
-            <Row key={props.fieldName}
-                left={<Title schemaNode={props.schemaNode} fieldName={props.fieldName} />}
-                right={node}
-            />
-        );
-    }
-    return (
-        <React.Fragment key={props.fieldName}>
-            {node}
-        </React.Fragment>
-    );
-}
-renderObjectField.propTypes = {
-    schemaNode: PropTypes.object.isRequired,
-    fieldName: PropTypes.string.isRequired
-};
-
-const Row = ({ left, right }) => {
-    return (
-        <div className="row">
-            <div className="col-xs-4">
-                {left}
-            </div>
-            <div className="col-xs-8">
-                {right}
-            </div>
-        </div>
-    );
-}
-Row.propTypes = {
-    left: PropTypes.node,
-    right: PropTypes.node
-};
