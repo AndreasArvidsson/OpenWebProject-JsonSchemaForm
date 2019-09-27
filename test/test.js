@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
-import JsonSchemaForm from "../src/index.js";
 import "bootstrap/dist/css/bootstrap.css";
 import schema from "./schemaSample";
 import modelSample from "./modelSample";
 import _set from "lodash.set";
 import jsonSchema from "jsonschema";
-import Util from "../src/Util";
+import JsonSchemaForm, { Util } from "../src/index.js";
 
 console.log("test.js")
+/* eslint-disable react/prop-types */ //TODO
 
 const App = () => {
     const [model, setModel] = useState(modelSample);
@@ -20,6 +20,13 @@ const App = () => {
     }
 
     const onChange = (path, value) => {
+        if (path.startsWith("selectionExcludes")) {
+            console.log(path.split(".")[1], value);
+            return;
+        }
+
+        console.log("onchange", path, value);
+
         const newModel = { ...model };
         _set(newModel, path, value);
         setErrors(getErrors(newModel));
@@ -35,11 +42,23 @@ const App = () => {
 
     const onRender = {
         "name": function a(props, defaultRenderMethod) {
-            return defaultRenderMethod({...props, disabled:true})
-            // return <div>
-            //     adasd
-            //     {defaultRenderMethod(props)}
-            // </div>
+            return defaultRenderMethod({ ...props, disabled: true })
+        },
+        "selectionExcludes": function selectionExcludes(props, defaultRenderMethod) {
+            console.log(props);
+            const value = {};
+            const schemaNode = {
+                type: "object",
+                properties: {}
+            };
+            props.schemaNode.items.oneOf.forEach(oneOf => {
+                value[oneOf.const] = true;
+                schemaNode.properties[oneOf.const] = {
+                    type: "boolean",
+                    title: oneOf.title
+                }
+            });
+            return defaultRenderMethod({ ...props, value, schemaNode });
         }
     };
 

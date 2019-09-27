@@ -10,8 +10,8 @@ const BoolNode = ({ value, path, schemaNode, onChange, onRemove, removable, auto
             <label className="radio-inline">
                 <input
                     type="radio"
-                    checked={value === false}
-                    onChange={() => onChange(path, false)}
+                    checked={value === true}
+                    onChange={() => onChange(path, true)}
                     autoFocus={autoFocus}
                     disabled={disabled}
                 />
@@ -20,8 +20,8 @@ const BoolNode = ({ value, path, schemaNode, onChange, onRemove, removable, auto
             <label className="radio-inline">
                 <input
                     type="radio"
-                    checked={value === true}
-                    onChange={() => onChange(path, true)}
+                    checked={value === false}
+                    onChange={() => onChange(path, false)}
                     disabled={disabled}
                 />
                 {texts.boolNo || "No"}

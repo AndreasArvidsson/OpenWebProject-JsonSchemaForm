@@ -24,22 +24,54 @@ const JsonSchemaForm = ({ schema, model, onChange, onRemove, errors = {}, onRend
 
     const getNode = (props) => {
         if (props.schemaNode.enum || props.schemaNode.oneOf) {
-            return <EnumNode {...props} />
+            return <EnumNode {...props}
+                onChange={onChange}
+                onRemove={onRemove}
+                texts={texts}
+            />
         }
         const type = Util.getType(props.schemaNode);
         switch (type) {
             case "object":
-                return <ObjectNode {...props} renderNode={renderNode} />
+                return <ObjectNode 
+                    {...props}
+                    renderNode={renderNode}
+                    onChange={onChange}
+                    onRemove={onRemove}
+                />
             case "array":
-                return <ArrayNode {...props} renderNode={renderNode} getNew={getNew} />
+                return <ArrayNode 
+                    {...props}
+                    renderNode={renderNode}
+                    onChange={onChange}
+                    onRemove={onRemove}
+                    getNew={getNew}
+                />
             case "string":
-                return <StringNode  {...props} />
+                return <StringNode 
+                    {...props}
+                    onChange={onChange}
+                    onRemove={onRemove}
+                />
             case "boolean":
-                return <BoolNode {...props} />
+                return <BoolNode 
+                    {...props}
+                    onChange={onChange}
+                    onRemove={onRemove}
+                    texts={texts}
+                />
             case "number":
-                return <NumberNode {...props} />
+                return <NumberNode 
+                    {...props}
+                    onChange={onChange}
+                    onRemove={onRemove}
+                />
             case "integer":
-                return <IntegerNode {...props} />
+                return <IntegerNode
+                    {...props}
+                    onChange={onChange}
+                    onRemove={onRemove}
+                />
             default:
                 console.warn("Unknown type ", props.schemaNode);
                 return <div>Unknown type {type}</div>
@@ -51,7 +83,7 @@ const JsonSchemaForm = ({ schema, model, onChange, onRemove, errors = {}, onRend
     };
 
     const applyAutoFocus = (props) => {
-        if (autoFocus && !props.disabled 
+        if (autoFocus && !props.disabled
             && props.schemaNode.type !== "object"
             && props.schemaNode.type !== "array") {
             autoFocus = false;
@@ -79,10 +111,7 @@ const JsonSchemaForm = ({ schema, model, onChange, onRemove, errors = {}, onRend
         props = {
             ...props,
             error: errors[props.path],
-            schemaNode: Util.updateRef(schema, props.schemaNode),
-            onChange,
-            onRemove,
-            texts
+            schemaNode: Util.updateRef(schema, props.schemaNode)
         };
         if (onRender[props.path]) {
             return onRender[props.path](props, defaultRenderMethod);
@@ -97,10 +126,6 @@ const JsonSchemaForm = ({ schema, model, onChange, onRemove, errors = {}, onRend
         path: PropTypes.string.isRequired
     };
 
-    //Still loading for the first time.
-    if (!errors) {
-        return null;
-    }
     //Render root document.
     return (
         <div className="json-schema-form">
