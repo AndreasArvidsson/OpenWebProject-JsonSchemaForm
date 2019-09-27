@@ -34,12 +34,13 @@ const App = () => {
     }
 
     const onRender = {
-        // "name": function a(props, defaultRenderMethod) {
-        //     return <div>
-        //         adasd
-        //         {defaultRenderMethod(props)}
-        //     </div>
-        // }
+        "name": function a(props, defaultRenderMethod) {
+            return defaultRenderMethod({...props, disabled:true})
+            // return <div>
+            //     adasd
+            //     {defaultRenderMethod(props)}
+            // </div>
+        }
     };
 
     return (

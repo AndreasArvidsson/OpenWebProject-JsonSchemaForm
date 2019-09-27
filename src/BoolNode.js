@@ -4,7 +4,7 @@ import ValidationIcon from "./ValidationIcon";
 import RemoveIcon from "./RemoveIcon";
 import Util from "./Util";
 
-const BoolNode = ({ value, path, schemaNode, onChange, onRemove, removable, autoFocus, error, texts = {} }) => {
+const BoolNode = ({ value, path, schemaNode, onChange, onRemove, removable, autoFocus, error, disabled, texts = {} }) => {
     return (
         <div className="input-group">
             <label className="radio-inline">
@@ -13,6 +13,7 @@ const BoolNode = ({ value, path, schemaNode, onChange, onRemove, removable, auto
                     checked={value === false}
                     onChange={() => onChange(path, false)}
                     autoFocus={autoFocus}
+                    disabled={disabled}
                 />
                 {texts.boolYes || "Yes"}
             </label>
@@ -21,6 +22,7 @@ const BoolNode = ({ value, path, schemaNode, onChange, onRemove, removable, auto
                     type="radio"
                     checked={value === true}
                     onChange={() => onChange(path, true)}
+                    disabled={disabled}
                 />
                 {texts.boolNo || "No"}
             </label>
@@ -30,6 +32,7 @@ const BoolNode = ({ value, path, schemaNode, onChange, onRemove, removable, auto
                         type="radio"
                         checked={value === null || value === undefined}
                         onChange={() => onChange(path, null)}
+                        disabled={disabled}
                     />
                     {texts.boolNull || "Null"}
                 </label>
@@ -48,6 +51,7 @@ BoolNode.propTypes = {
     removable: PropTypes.bool,
     onRemove: PropTypes.func.isRequired,
     autoFocus: PropTypes.bool,
+    disabled: PropTypes.bool,
     texts: PropTypes.object
 };
 export default BoolNode;

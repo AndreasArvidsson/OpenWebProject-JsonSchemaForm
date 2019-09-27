@@ -6,7 +6,7 @@ import Util from "./Util";
 
 const defaultNullText = "Choose";
 
-const EnumNode = ({ value, path, schemaNode, onChange, onRemove, error, removable, autoFocus, texts = {} }) => {
+const EnumNode = ({ value, path, schemaNode, onChange, onRemove, error, removable, autoFocus, disabled, texts = {} }) => {
     const enumChanged = (e) => {
         onChange(path, e.target.value === "" ? null : e.target.value);
     }
@@ -20,6 +20,7 @@ const EnumNode = ({ value, path, schemaNode, onChange, onRemove, error, removabl
                 value={value}
                 onChange={enumChanged}
                 autoFocus={autoFocus}
+                disabled={disabled}
             >
                 <EnumOptions value={value} schemaNode={schemaNode} texts={texts} />
             </select>
@@ -33,11 +34,12 @@ EnumNode.propTypes = {
     path: PropTypes.string.isRequired,
     schemaNode: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,
+    onRemove: PropTypes.func.isRequired,
     error: PropTypes.string,
     removable: PropTypes.bool,
-    onRemove: PropTypes.func.isRequired,
     autoFocus: PropTypes.bool,
-    texts: PropTypes.object.isRequired
+    disabled: PropTypes.bool,
+    texts: PropTypes.object
 };
 export default EnumNode;
 

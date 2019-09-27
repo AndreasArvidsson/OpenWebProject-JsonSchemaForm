@@ -11,14 +11,13 @@ const ObjectNode = ({ value, path, schemaNode, removable, fieldName, renderNode,
     const [show, setShow] = useState(true);
     const addNew = () => onChange(path, {});
 
-    const getContent = (autoFocus) => {
+    const getContent = () => {
         return schemaNode.properties.map((schemaNode, fieldName) => {
             const p = Util.updatePath(path, fieldName);
             return <React.Fragment key={p}>
                 {renderNode({
                     value: value[fieldName],
                     path: p,
-                    autoFocus: autoFocus-- > 0,
                     schemaNode, fieldName,
                     parentType: "object"
                 })}
@@ -30,7 +29,7 @@ const ObjectNode = ({ value, path, schemaNode, removable, fieldName, renderNode,
     if (!path) {
         return (
             <div>
-                {getContent(1)}
+                {getContent()}
             </div>
         );
     }
@@ -51,7 +50,7 @@ const ObjectNode = ({ value, path, schemaNode, removable, fieldName, renderNode,
             </div>
             {(value && show) &&
                 <div className="panel-body">
-                    {getContent(0)}
+                    {getContent()}
                 </div>
             }
         </div>

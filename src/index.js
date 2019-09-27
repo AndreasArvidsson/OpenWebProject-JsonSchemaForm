@@ -19,9 +19,8 @@ import Title from "./Title";
 /* eslint-disable react/prop-types */ //TODO
 
 const JsonSchemaForm = ({ schema, model, onChange, onRemove, errors = {}, onRender = {}, texts = {} }) => {
-    const updateRef = schemaNode => Util.updateRef(schema, schemaNode);
     const getNew = schemaNode => Util.getNew(schema, schemaNode);
-
+    let autoFocus = true;
 
     const getNode = (props) => {
         if (props.schemaNode.enum || props.schemaNode.oneOf) {
@@ -51,15 +50,23 @@ const JsonSchemaForm = ({ schema, model, onChange, onRemove, errors = {}, onRend
         path: PropTypes.string.isRequired
     };
 
+    const applyAutoFocus = (props) => {
+        if (autoFocus && !props.disabled 
+            && props.schemaNode.type !== "object"
+            && props.schemaNode.type !== "array") {
+            autoFocus = false;
+            props.autoFocus = true;
+        }
+    }
+
     const defaultRenderMethod = (props) => {
+        applyAutoFocus(props);
         const node = getNode(props);
         if (props.parentType === "object" && Util.shouldAddRow(props.schemaNode)) {
-            return (
-                <Row
-                    left={<Title schemaNode={props.schemaNode} fieldName={props.fieldName} />}
-                    right={node}
-                />
-            );
+            return <Row
+                left={<Title schemaNode={props.schemaNode} fieldName={props.fieldName} />}
+                right={node}
+            />
         }
         return node;
     };
@@ -72,21 +79,17 @@ const JsonSchemaForm = ({ schema, model, onChange, onRemove, errors = {}, onRend
         props = {
             ...props,
             error: errors[props.path],
+            schemaNode: Util.updateRef(schema, props.schemaNode),
             onChange,
             onRemove,
             texts
         };
-
-        //Follow reference
-        props.schemaNode = updateRef(props.schemaNode);
-
         if (onRender[props.path]) {
             return onRender[props.path](props, defaultRenderMethod);
         }
         if (onRender[""]) {
             return onRender[""](props, defaultRenderMethod);
         }
-
         return defaultRenderMethod(props);
     };
     renderNode.propTypes = {

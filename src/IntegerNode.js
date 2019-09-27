@@ -3,9 +3,9 @@ import PropTypes from "prop-types";
 import ValidationIcon from "./ValidationIcon";
 import RemoveIcon from "./RemoveIcon";
 
-const IntegerNode = ({ value, path, updateModel, errors, removable, removePath, autoFocus }) => {
-    const onChange = (path, value) => {
-        updateModel(path, value === "" ? null : Number.parseInt(value));
+const IntegerNode = ({ value, path, onChange, onRemove, error, removable, autoFocus, disabled }) => {
+    const intChanged = (e) => {
+        onChange(path, e.target.value === "" ? null : Number.parseInt(e.target.value));
     }
     if (value === null || value === undefined) {
         value = "";
@@ -15,22 +15,24 @@ const IntegerNode = ({ value, path, updateModel, errors, removable, removePath, 
             <input
                 type="number"
                 className="form-control"
-                onChange={e => onChange(path, e.target.value)}
+                onChange={intChanged}
                 value={value}
                 autoFocus={autoFocus}
+                disabled={disabled}
             />
-            <ValidationIcon errors={errors} />
-            {removable && <RemoveIcon path={path} onClick={removePath} />}
+            <ValidationIcon error={error} />
+            {removable && <RemoveIcon path={path} onClick={onRemove} />}
         </div>
     );
 };
 IntegerNode.propTypes = {
     value: PropTypes.number,
     path: PropTypes.string.isRequired,
-    updateModel: PropTypes.func.isRequired,
-    errors: PropTypes.arrayOf(PropTypes.string),
+    onChange: PropTypes.func.isRequired,
+    onRemove: PropTypes.func.isRequired,
+    error: PropTypes.string,
     removable: PropTypes.bool,
-    removePath: PropTypes.func.isRequired,
-    autoFocus: PropTypes.bool
+    autoFocus: PropTypes.bool,
+    disabled: PropTypes.bool
 };
 export default IntegerNode;
