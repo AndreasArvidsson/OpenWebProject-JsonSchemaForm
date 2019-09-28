@@ -18,7 +18,7 @@ import Title from "./Title";
 
 /* eslint-disable react/prop-types */ //TODO
 
-const JsonSchemaForm = ({ schema, model, onChange, onRemove, errors = {}, onRender = {}, texts = {} }) => {
+const JsonSchemaForm = ({ schema, model, onChange, onRemove, onRender, errors = {}, texts = {} }) => {
     const getNew = schemaNode => Util.getNew(schema, schemaNode);
     let autoFocus = true;
 
@@ -35,16 +35,16 @@ const JsonSchemaForm = ({ schema, model, onChange, onRemove, errors = {}, onRend
             case "object":
                 return <ObjectNode 
                     {...props}
-                    renderNode={renderNode}
                     onChange={onChange}
                     onRemove={onRemove}
+                    renderNode={renderNode}
                 />
             case "array":
                 return <ArrayNode 
                     {...props}
-                    renderNode={renderNode}
                     onChange={onChange}
                     onRemove={onRemove}
+                    renderNode={renderNode}
                     getNew={getNew}
                 />
             case "string":
@@ -113,11 +113,8 @@ const JsonSchemaForm = ({ schema, model, onChange, onRemove, errors = {}, onRend
             error: errors[props.path],
             schemaNode: Util.updateRef(schema, props.schemaNode)
         };
-        if (onRender[props.path]) {
-            return onRender[props.path](props, defaultRenderMethod);
-        }
-        if (onRender[""]) {
-            return onRender[""](props, defaultRenderMethod);
+        if (onRender) {
+            return onRender(props, defaultRenderMethod);
         }
         return defaultRenderMethod(props);
     };
@@ -138,8 +135,8 @@ JsonSchemaForm.propTypes = {
     model: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,
     onRemove: PropTypes.func.isRequired,
+    onRender: PropTypes.func,
     errors: PropTypes.object,
-    onRender: PropTypes.object,
     texts: PropTypes.object
 };
 export default JsonSchemaForm;
