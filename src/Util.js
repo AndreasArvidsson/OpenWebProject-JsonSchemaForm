@@ -20,16 +20,6 @@ const Util = {
         return schemaNode.type.split(",")[0].trim();
     },
 
-    isNullable: function (schemaNode) {
-        if (schemaNode.enum) {
-            return schemaNode.enum.indexOf(null) > -1
-        }
-        if (schemaNode.oneOf) {
-            return !!schemaNode.oneOf.find(oneOf => oneOf.const === null);
-        }
-        return schemaNode.type.includes("null");
-    },
-
     shouldAddRow: function (schemaNode) {
         if (schemaNode.type) {
             return !schemaNode.type.includes("array") && !schemaNode.type.includes("object");
@@ -57,6 +47,11 @@ const Util = {
                 return {};
             case "array":
                 return [];
+            case "string":
+                return "";
+            case "number":
+            case "integer":
+                return 0;
             default:
                 return null;
         }

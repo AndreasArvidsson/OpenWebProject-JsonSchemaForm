@@ -7,7 +7,7 @@ import AddIcon from "./AddIcon";
 import RemoveIcon from "./RemoveIcon";
 import ObjectTitle from "./ObjectTitle";
 
-const ObjectNode = ({ value, path, schemaNode, removable, fieldName, 
+const ObjectNode = ({ value, path, schemaNode, removable, nullable, fieldName, 
     renderNode, onChange, onRemove, error, disabled = {} }) => {
     
     const [show, setShow] = useState(true);
@@ -20,12 +20,18 @@ const ObjectNode = ({ value, path, schemaNode, removable, fieldName,
                 {renderNode({
                     value: value[fieldName],
                     path: p,
-                    schemaNode, fieldName,
                     parentType: "object",
-                    disabled: disabled[fieldName]
+                    disabled: disabled[fieldName],
+                    nullable: isNullable(fieldName),
+                    schemaNode, fieldName,
                 })}
             </React.Fragment>
         })
+    };
+
+    const isNullable = (fieldName) => {
+        return !schemaNode.required 
+        || !schemaNode.required.includes(fieldName);
     };
 
     //Root node. Dont add panel.
@@ -37,18 +43,14 @@ const ObjectNode = ({ value, path, schemaNode, removable, fieldName,
         );
     }
 
-    if (!removable) {
-        removable = value && Util.isNullable(schemaNode);
-    }
-
     return (
         <div className={"panel panel-" + (value ? "default" : "warning")}>
             <div className="panel-heading">
                 <span className="input-group">
                     <ObjectTitle disabled={!value} show={show} setShow={setShow} schemaNode={schemaNode} fieldName={fieldName} />
                     <ValidationIcon error={error} />
-                    {(!value && !removable) && <AddIcon onClick={addNew} />}
-                    {removable && <RemoveIcon path={path} onClick={onRemove} />}
+                    {!value && <AddIcon onClick={addNew} />}
+                    {(value && (removable || nullable)) && <RemoveIcon path={path} onClick={onRemove} />}
                 </span>
             </div>
             {(value && show) &&
@@ -69,6 +71,7 @@ ObjectNode.propTypes = {
     onChange: PropTypes.func.isRequired,
     onRemove: PropTypes.func.isRequired,
     error: PropTypes.string,
-    disabled: PropTypes.object
+    disabled: PropTypes.object,
+    nullable: PropTypes.bool
 };
 export default ObjectNode;

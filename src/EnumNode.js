@@ -2,11 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import ValidationIcon from "./ValidationIcon";
 import RemoveIcon from "./RemoveIcon";
-import Util from "./Util";
 
-const defaultNullText = "Choose";
-
-const EnumNode = ({ value, path, schemaNode, onChange, onRemove, error, removable, autoFocus, disabled, texts = {} }) => {
+const EnumNode = ({ value, path, schemaNode, onChange, error, removable, onRemove, nullable, autoFocus, disabled, texts = {} }) => {
     const enumChanged = (e) => {
         onChange(path, e.target.value === "" ? null : e.target.value);
     }
@@ -22,7 +19,7 @@ const EnumNode = ({ value, path, schemaNode, onChange, onRemove, error, removabl
                 autoFocus={autoFocus}
                 disabled={disabled}
             >
-                <EnumOptions value={value} schemaNode={schemaNode} texts={texts} />
+                <EnumOptions value={value} schemaNode={schemaNode} texts={texts} nullable={nullable} />
             </select>
             <ValidationIcon error={error} />
             {removable && <RemoveIcon path={path} onClick={onRemove} />}
@@ -34,18 +31,25 @@ EnumNode.propTypes = {
     path: PropTypes.string.isRequired,
     schemaNode: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,
-    onRemove: PropTypes.func.isRequired,
     error: PropTypes.string,
     removable: PropTypes.bool,
+    onRemove: PropTypes.func.isRequired,
+    nullable: PropTypes.bool,
     autoFocus: PropTypes.bool,
     disabled: PropTypes.bool,
     texts: PropTypes.object
 };
 export default EnumNode;
 
-const EnumOptions = ({ value, schemaNode, texts }) => {
+const defaultNullText = "Choose";
+
+const EnumOptions = ({ value, schemaNode, texts, nullable }) => {
     const getDefaultNullOption = () => {
-        return <option key={null} value={null}>{texts.selectNull || defaultNullText}</option>;
+        return (
+            <option key="" value="">
+                {texts.selectNull || defaultNullText}
+            </option>
+        );
     };
     let nullOptionAdded = false;
     let options;
@@ -66,7 +70,7 @@ const EnumOptions = ({ value, schemaNode, texts }) => {
             if (oneOf.const === null) {
                 nullOptionAdded = true;
                 return (
-                    <option key={oneOf.const} value={oneOf.const} title={oneOf.description}>
+                    <option key="" value="" title={oneOf.description}>
                         {oneOf.title || texts.selectNull || defaultNullText}
                     </option>
                 );
@@ -80,7 +84,7 @@ const EnumOptions = ({ value, schemaNode, texts }) => {
     }
 
     //Have no null choice and we are already in null state or is nullable.
-    if (!nullOptionAdded && (!value || Util.isNullable(schemaNode))) {
+    if (!nullOptionAdded && (!value || nullable)) {
         options.unshift(getDefaultNullOption());
     }
 
@@ -98,5 +102,6 @@ const schemaNode = PropTypes.shape({
 EnumOptions.propTypes = {
     value: PropTypes.string.isRequired,
     texts: PropTypes.object.isRequired,
-    schemaNode: schemaNode.isRequired
+    schemaNode: schemaNode.isRequired,
+    nullable: PropTypes.bool
 };

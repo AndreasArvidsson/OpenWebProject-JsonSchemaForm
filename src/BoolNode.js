@@ -2,10 +2,9 @@ import React from "react";
 import PropTypes from "prop-types";
 import ValidationIcon from "./ValidationIcon";
 import RemoveIcon from "./RemoveIcon";
-import Util from "./Util";
 
-const BoolNode = ({ value, path, schemaNode, onChange, onRemove, removable, autoFocus, error, disabled, texts = {} }) => {
-    const style = disabled ? { cursor: "not-allowed" } : { cursor: "pointer" };
+const BoolNode = ({ value, path, onChange, removable, onRemove, nullable, autoFocus, error, disabled, texts = {} }) => {
+    const style = { cursor: disabled ? "not-allowed" : "pointer" };
     return (
         <div className="input-group">
             <label className="radio-inline" style={style}>
@@ -29,7 +28,7 @@ const BoolNode = ({ value, path, schemaNode, onChange, onRemove, removable, auto
                 />
                 {texts.boolNo || "No"}
             </label>
-            {Util.isNullable(schemaNode) &&
+            {nullable &&
                 <label className="radio-inline" style={style}>
                     <input
                         type="radio"
@@ -49,11 +48,11 @@ const BoolNode = ({ value, path, schemaNode, onChange, onRemove, removable, auto
 BoolNode.propTypes = {
     value: PropTypes.bool,
     path: PropTypes.string.isRequired,
-    schemaNode: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,
     error: PropTypes.string,
     removable: PropTypes.bool,
     onRemove: PropTypes.func.isRequired,
+    nullable: PropTypes.bool,
     autoFocus: PropTypes.bool,
     disabled: PropTypes.bool,
     texts: PropTypes.object

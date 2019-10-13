@@ -7,16 +7,12 @@ import RemoveIcon from "./RemoveIcon";
 import BadgeIcon from "./BadgeIcon";
 import ObjectTitle from "./ObjectTitle";
 
-const ArrayNode = ({ value, path, schemaNode, removable, fieldName, 
+const ArrayNode = ({ value, path, schemaNode, removable, nullable, fieldName, 
     renderNode, getNew, onChange, onRemove, error, disabled = {} }) => {
     
     const [show, setShow] = useState(true);
     const addNew = () => onChange(path, []);
     const addNewChild = () => onChange(Util.updatePath(path, value.length), getNew(schemaNode.items));
-
-    if (!removable) {
-        removable = value && Util.isNullable(schemaNode);
-    }
 
     return (
         <div className={"panel panel-" + (value ? "default" : "warning")}>
@@ -33,8 +29,8 @@ const ArrayNode = ({ value, path, schemaNode, removable, fieldName,
                         </React.Fragment>
                     }
                     <ValidationIcon error={error} />
-                    {(!value && !removable) && <AddIcon onClick={addNew} />}
-                    {removable && <RemoveIcon path={path} onClick={onRemove} />}
+                    {!value && <AddIcon onClick={addNew} />}
+                    {(value && (removable || nullable)) && <RemoveIcon path={path} onClick={onRemove} />}
                 </span>
             </div>
 
@@ -71,6 +67,7 @@ ArrayNode.propTypes = {
     onChange: PropTypes.func.isRequired,
     onRemove: PropTypes.func.isRequired,
     error: PropTypes.string,
-    disabled: PropTypes.object
+    disabled: PropTypes.object,
+    nullable: PropTypes.bool
 };
 export default ArrayNode;
