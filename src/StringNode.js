@@ -4,9 +4,6 @@ import ValidationIcon from "./ValidationIcon";
 import RemoveIcon from "./RemoveIcon";
 
 const StringNode = ({ value, path, onChange, onRemove, error, removable, autoFocus, disabled }) => {
-    const stringChanged = (e) => {
-        onChange(path, e.target.value === "" ? null : e.target.value);
-    } 
     if (value === null || value === undefined) {
         value = "";
     }
@@ -15,7 +12,7 @@ const StringNode = ({ value, path, onChange, onRemove, error, removable, autoFoc
             <input
                 type="text"
                 className="form-control"
-                onChange={stringChanged}
+                onChange={e => onChange(path, e.target.value)}
                 value={value}
                 autoFocus={autoFocus}
                 disabled={disabled}

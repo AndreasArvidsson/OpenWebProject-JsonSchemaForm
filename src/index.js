@@ -16,32 +16,30 @@ import BoolNode from "./BoolNode";
 import Row from "./Row";
 import Title from "./Title";
 
-/* eslint-disable react/prop-types */ //TODO
-
-const JsonSchemaForm = ({ schema, model, onChange, onRemove, onRender, errors = {}, texts = {} }) => {
+const JsonSchemaForm = ({ schema, instance, onChange, onRemove, onRender, errors = {}, texts = {} }) => {
     const getNew = schemaNode => Util.getNew(schema, schemaNode);
     let autoFocus = true;
 
-    const getNode = (props) => {
-        if (props.schemaNode.enum || props.schemaNode.oneOf) {
-            return <EnumNode {...props}
+    const getNode = (nodeProps) => {
+        if (nodeProps.schemaNode.enum || (!nodeProps.schemaNode.type && nodeProps.schemaNode.oneOf)) {
+            return <EnumNode {...nodeProps}
                 onChange={onChange}
                 onRemove={onRemove}
                 texts={texts}
             />
         }
-        const type = Util.getType(props.schemaNode);
+        const type = Util.getType(nodeProps.schemaNode);
         switch (type) {
             case "object":
                 return <ObjectNode 
-                    {...props}
+                    {...nodeProps}
                     onChange={onChange}
                     onRemove={onRemove}
                     renderNode={renderNode}
                 />
             case "array":
                 return <ArrayNode 
-                    {...props}
+                    {...nodeProps}
                     onChange={onChange}
                     onRemove={onRemove}
                     renderNode={renderNode}
@@ -49,90 +47,78 @@ const JsonSchemaForm = ({ schema, model, onChange, onRemove, onRender, errors = 
                 />
             case "string":
                 return <StringNode 
-                    {...props}
+                    {...nodeProps}
                     onChange={onChange}
                     onRemove={onRemove}
                 />
             case "boolean":
                 return <BoolNode 
-                    {...props}
+                    {...nodeProps}
                     onChange={onChange}
                     onRemove={onRemove}
                     texts={texts}
                 />
             case "number":
                 return <NumberNode 
-                    {...props}
+                    {...nodeProps}
                     onChange={onChange}
                     onRemove={onRemove}
                 />
             case "integer":
                 return <IntegerNode
-                    {...props}
+                    {...nodeProps}
                     onChange={onChange}
                     onRemove={onRemove}
                 />
             default:
-                console.warn("Unknown type ", props.schemaNode);
+                console.warn("Unknown type ", nodeProps.schemaNode);
                 return <div>Unknown type {type}</div>
         }
     };
-    getNode.propTypes = {
-        schemaNode: PropTypes.object.isRequired,
-        path: PropTypes.string.isRequired
-    };
 
-    const applyAutoFocus = (props) => {
-        if (autoFocus && !props.disabled
-            && props.schemaNode.type !== "object"
-            && props.schemaNode.type !== "array") {
+    const applyAutoFocus = (nodeProps) => {
+        if (autoFocus && !nodeProps.disabled
+            && nodeProps.schemaNode.type !== "object"
+            && nodeProps.schemaNode.type !== "array") {
             autoFocus = false;
-            props.autoFocus = true;
+            nodeProps.autoFocus = true;
         }
     }
 
-    const defaultRenderMethod = (props) => {
-        applyAutoFocus(props);
-        const node = getNode(props);
-        if (props.parentType === "object" && Util.shouldAddRow(props.schemaNode)) {
+    const defaultRenderMethod = (nodeProps) => {
+        applyAutoFocus(nodeProps);
+        const node = getNode(nodeProps);
+        if (nodeProps.parentType === "object" && Util.shouldAddRow(nodeProps.schemaNode)) {
             return <Row
-                left={<Title schemaNode={props.schemaNode} fieldName={props.fieldName} />}
+                left={<Title schemaNode={nodeProps.schemaNode} fieldName={nodeProps.fieldName} />}
                 right={node}
             />
         }
         return node;
     };
-    defaultRenderMethod.propTypes = {
-        schemaNode: PropTypes.object.isRequired,
-        path: PropTypes.string.isRequired
-    };
 
-    const renderNode = (props) => {
-        props = {
-            ...props,
-            error: errors[props.path],
-            schemaNode: Util.updateRef(schema, props.schemaNode)
+    const renderNode = (nodeProps) => {
+        nodeProps = {
+            ...nodeProps,
+            error: errors[nodeProps.path],
+            schemaNode: Util.updateRef(schema, nodeProps.schemaNode)
         };
         if (onRender) {
-            return onRender(props, defaultRenderMethod);
+            return onRender(nodeProps, defaultRenderMethod);
         }
-        return defaultRenderMethod(props);
-    };
-    renderNode.propTypes = {
-        schemaNode: PropTypes.object.isRequired,
-        path: PropTypes.string.isRequired
+        return defaultRenderMethod(nodeProps);
     };
 
     //Render root document.
     return (
         <div className="json-schema-form">
-            {renderNode({ value: model, schemaNode: schema, fieldName: "", path: "" })}
+            {renderNode({ value: instance, schemaNode: schema, fieldName: "", path: "" })}
         </div>
     );
 };
 JsonSchemaForm.propTypes = {
     schema: PropTypes.object.isRequired,
-    model: PropTypes.object.isRequired,
+    instance: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,
     onRemove: PropTypes.func.isRequired,
     onRender: PropTypes.func,

@@ -7,6 +7,42 @@ import _set from "lodash.set";
 import jsonSchema from "jsonschema";
 import JsonSchemaForm, { Util } from "../src/index.js";
 
+const m = {
+    value1: "aasdassad",
+    // value2: "as"
+};
+const s = {
+    type: "object",
+    // allOf: [
+    //     {
+    //         required: ["value1"]
+    //     },
+    //     {
+    //         required: ["value2"]
+    //     }
+    // ],
+    
+    // dependencies: {
+    //     value:    ["value2"]
+    // },
+    properties: {
+        value1: {
+            type: "string",
+            const: 6
+            // maxLength: 2,
+            // pattern: "\\d"
+        },
+        value2: {
+            type: "string",
+            // maxLength: 2,
+            // pattern: "\\d"
+        }
+    }
+};
+
+const validation = jsonSchema.validate(m, s);
+console.log(JSON.stringify(validation.errors, undefined, 4));
+
 console.log("test.js")
 /* eslint-disable react/prop-types */ //TODO
 
@@ -20,15 +56,14 @@ const App = () => {
     }
 
     const onChange = (path, value) => {
-        if (path.startsWith("selectionExcludes")) {
-            console.log(path.split(".")[1], value);
-            return;
-        }
-
-        console.log("onchange", path, value);
-
+        console.log(path, value);
         const newModel = { ...model };
-        _set(newModel, path, value);
+        if (path.startsWith("selectionExcludes")) {
+            SelectionExcludes.onChange(newModel, path, value)
+        }
+        else {
+            _set(newModel, path, value);
+        }
         setErrors(getErrors(newModel));
         setModel(newModel);
     }
@@ -40,27 +75,15 @@ const App = () => {
         setModel(newModel);
     }
 
-    const onRender = {
-        "name": function a(props, defaultRenderMethod) {
+    const onRender = (props, defaultRenderMethod) => {
+        if (props.path === "name") {
             return defaultRenderMethod({ ...props, disabled: true })
-        },
-        "selectionExcludes": function selectionExcludes(props, defaultRenderMethod) {
-            console.log(props);
-            const value = {};
-            const schemaNode = {
-                type: "object",
-                properties: {}
-            };
-            props.schemaNode.items.oneOf.forEach(oneOf => {
-                value[oneOf.const] = true;
-                schemaNode.properties[oneOf.const] = {
-                    type: "boolean",
-                    title: oneOf.title
-                }
-            });
-            return defaultRenderMethod({ ...props, value, schemaNode });
         }
-    };
+        if (props.path === "selectionExcludes") {
+            return <SelectionExcludes {...props} defaultRenderMethod={defaultRenderMethod} />
+        }
+        return defaultRenderMethod(props);
+    }
 
     return (
         <JsonSchemaForm

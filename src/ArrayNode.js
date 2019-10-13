@@ -7,7 +7,9 @@ import RemoveIcon from "./RemoveIcon";
 import BadgeIcon from "./BadgeIcon";
 import ObjectTitle from "./ObjectTitle";
 
-const ArrayNode = ({ value, path, schemaNode, removable, fieldName, renderNode, getNew, onChange, onRemove, error }) => {
+const ArrayNode = ({ value, path, schemaNode, removable, fieldName, 
+    renderNode, getNew, onChange, onRemove, error, disabled = {} }) => {
+    
     const [show, setShow] = useState(true);
     const addNew = () => onChange(path, []);
     const addNewChild = () => onChange(Util.updatePath(path, value.length), getNew(schemaNode.items));
@@ -47,7 +49,8 @@ const ArrayNode = ({ value, path, schemaNode, removable, fieldName, renderNode, 
                                 schemaNode: schemaNode.items,
                                 fieldName: i.toString(),
                                 removable: true,
-                                parentType: "array"
+                                parentType: "array",
+                                disabled: disabled[i]
                             })}
                         </React.Fragment>
                     })}
@@ -67,6 +70,7 @@ ArrayNode.propTypes = {
     getNew: PropTypes.func.isRequired,
     onChange: PropTypes.func.isRequired,
     onRemove: PropTypes.func.isRequired,
-    error: PropTypes.string
+    error: PropTypes.string,
+    disabled: PropTypes.object
 };
 export default ArrayNode;

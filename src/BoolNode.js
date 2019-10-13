@@ -5,34 +5,38 @@ import RemoveIcon from "./RemoveIcon";
 import Util from "./Util";
 
 const BoolNode = ({ value, path, schemaNode, onChange, onRemove, removable, autoFocus, error, disabled, texts = {} }) => {
+    const style = disabled ? { cursor: "not-allowed" } : { cursor: "pointer" };
     return (
         <div className="input-group">
-            <label className="radio-inline">
+            <label className="radio-inline" style={style}>
                 <input
                     type="radio"
                     checked={value === true}
                     onChange={() => onChange(path, true)}
                     autoFocus={autoFocus}
                     disabled={disabled}
+                    style={style}
                 />
                 {texts.boolYes || "Yes"}
             </label>
-            <label className="radio-inline">
+            <label className="radio-inline" style={style}>
                 <input
                     type="radio"
                     checked={value === false}
                     onChange={() => onChange(path, false)}
                     disabled={disabled}
+                    style={style}
                 />
                 {texts.boolNo || "No"}
             </label>
             {Util.isNullable(schemaNode) &&
-                <label className="radio-inline">
+                <label className="radio-inline" style={style}>
                     <input
                         type="radio"
                         checked={value === null || value === undefined}
                         onChange={() => onChange(path, null)}
                         disabled={disabled}
+                        style={style}
                     />
                     {texts.boolNull || "Null"}
                 </label>

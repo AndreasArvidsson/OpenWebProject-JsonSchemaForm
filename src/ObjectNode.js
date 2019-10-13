@@ -7,7 +7,9 @@ import AddIcon from "./AddIcon";
 import RemoveIcon from "./RemoveIcon";
 import ObjectTitle from "./ObjectTitle";
 
-const ObjectNode = ({ value, path, schemaNode, removable, fieldName, renderNode, onChange, onRemove, error }) => {
+const ObjectNode = ({ value, path, schemaNode, removable, fieldName, 
+    renderNode, onChange, onRemove, error, disabled = {} }) => {
+    
     const [show, setShow] = useState(true);
     const addNew = () => onChange(path, {});
 
@@ -19,7 +21,8 @@ const ObjectNode = ({ value, path, schemaNode, removable, fieldName, renderNode,
                     value: value[fieldName],
                     path: p,
                     schemaNode, fieldName,
-                    parentType: "object"
+                    parentType: "object",
+                    disabled: disabled[fieldName]
                 })}
             </React.Fragment>
         })
@@ -65,6 +68,7 @@ ObjectNode.propTypes = {
     renderNode: PropTypes.func.isRequired,
     onChange: PropTypes.func.isRequired,
     onRemove: PropTypes.func.isRequired,
-    error: PropTypes.string
+    error: PropTypes.string,
+    disabled: PropTypes.object
 };
 export default ObjectNode;

@@ -1,7 +1,7 @@
 import "owp.core/string/replaceAll";
 import "owp.core/string/capitalizeFirst";
 import _get from "lodash.get";
-import _set from "lodash.set";
+import _unset from "lodash.unset";
 
 const Util = {
 
@@ -76,16 +76,16 @@ const Util = {
     },
 
     remove: function (model, path) {
-        //Array path.
+        //Array path. Remove item from array.
         if (path.endsWith("]")) {
             const i = path.lastIndexOf("[");
             const parentPath = path.substring(0, i);
             const index = parseInt(path.substring(i + 1, path.length - 1));
             _get(model, parentPath).splice(index, 1);
         }
-        //Object path
+        //Object path. Unset property.
         else {
-            _set(model, path, null);
+            _unset(model, path);
         }
     }
 
