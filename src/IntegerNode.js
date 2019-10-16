@@ -4,9 +4,6 @@ import ValidationIcon from "./ValidationIcon";
 import RemoveIcon from "./RemoveIcon";
 
 const IntegerNode = ({ value, path, onChange, onRemove, error, removable, autoFocus, disabled }) => {
-    const intChanged = (e) => {
-        onChange(path, e.target.value === "" ? null : Number.parseInt(e.target.value));
-    }
     if (value === null || value === undefined) {
         value = "";
     }
@@ -15,7 +12,7 @@ const IntegerNode = ({ value, path, onChange, onRemove, error, removable, autoFo
             <input
                 type="number"
                 className="form-control"
-                onChange={intChanged}
+                onChange={e => onChange(path, getValue(e))}
                 value={value}
                 autoFocus={autoFocus}
                 disabled={disabled}
@@ -38,3 +35,7 @@ IntegerNode.propTypes = {
 };
 
 export default React.memo(IntegerNode);
+
+function getValue(e) {
+    return e.target.value === "" ? null : Number.parseInt(e.target.value);
+}

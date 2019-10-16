@@ -4,9 +4,6 @@ import ValidationIcon from "./ValidationIcon";
 import RemoveIcon from "./RemoveIcon";
 
 const EnumNode = ({ value, path, schemaNode, onChange, error, removable, onRemove, nullable, autoFocus, disabled, texts = {} }) => {
-    const enumChanged = (e) => {
-        onChange(path, e.target.value === "" ? null : e.target.value);
-    }
     if (value === null || value === undefined) {
         value = "";
     }
@@ -15,7 +12,7 @@ const EnumNode = ({ value, path, schemaNode, onChange, error, removable, onRemov
             <select
                 className="form-control"
                 value={value}
-                onChange={enumChanged}
+                onChange={e => onChange(path, getValue(e))}
                 autoFocus={autoFocus}
                 disabled={disabled}
             >
@@ -107,3 +104,7 @@ EnumOptions.propTypes = {
     schemaNode: schemaNode.isRequired,
     nullable: PropTypes.bool
 };
+
+function getValue(e) {
+    return e.target.value === "" ? null : e.target.value;
+}

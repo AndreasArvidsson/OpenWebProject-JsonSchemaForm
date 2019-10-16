@@ -7,12 +7,9 @@ import RemoveIcon from "./RemoveIcon";
 import BadgeIcon from "./BadgeIcon";
 import ObjectTitle from "./ObjectTitle";
 
-const ArrayNode = ({ value, path, schemaNode, removable, nullable, fieldName, 
+const ArrayNode = ({ value, path, schemaNode, removable, nullable, fieldName,
     renderNode, getNew, onChange, onRemove, error, disabled = {} }) => {
-    
     const [show, setShow] = useState(true);
-    const addNew = () => onChange(path, []);
-    const addNewChild = () => onChange(Util.updatePath(path, value.length), getNew(schemaNode.items));
 
     return (
         <div className={"panel panel-" + (value ? "default" : "warning")}>
@@ -24,12 +21,12 @@ const ArrayNode = ({ value, path, schemaNode, removable, nullable, fieldName,
                     </span>
                     {value &&
                         <React.Fragment>
-                            <AddIcon onClick={addNewChild} />
+                            <AddIcon onClick={() => onChange(Util.updatePath(path, value.length), getNew(schemaNode.items))} />
                             <BadgeIcon value={value.length} />
                         </React.Fragment>
                     }
                     <ValidationIcon error={error} />
-                    {!value && <AddIcon onClick={addNew} />}
+                    {!value && <AddIcon onClick={() => onChange(path, [])} />}
                     {(value && (removable || nullable)) && <RemoveIcon path={path} onClick={onRemove} />}
                 </span>
             </div>

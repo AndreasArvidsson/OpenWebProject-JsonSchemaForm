@@ -7,36 +7,15 @@ import AddIcon from "./AddIcon";
 import RemoveIcon from "./RemoveIcon";
 import ObjectTitle from "./ObjectTitle";
 
-const ObjectNode = ({ value, path, schemaNode, removable, nullable, fieldName, 
+const ObjectNode = ({ value, path, schemaNode, removable, nullable, fieldName,
     renderNode, onChange, onRemove, error, disabled = {} }) => {
     const [show, setShow] = useState(true);
-
-    const getContent = () => {
-        return schemaNode.properties.map((schemaNode, fieldName) => {
-            const p = Util.updatePath(path, fieldName);
-            return <React.Fragment key={p}>
-                {renderNode({
-                    value: value[fieldName],
-                    path: p,
-                    parentType: "object",
-                    disabled: disabled[fieldName],
-                    nullable: isNullable(fieldName),
-                    schemaNode, fieldName,
-                })}
-            </React.Fragment>
-        })
-    };
-
-    const isNullable = (fieldName) => {
-        return !schemaNode.required 
-        || !schemaNode.required.includes(fieldName);
-    };
 
     //Root node. Dont add panel.
     if (!path) {
         return (
             <div>
-                {getContent()}
+                {getContent(value, path, schemaNode, renderNode, disabled)}
             </div>
         );
     }
@@ -53,7 +32,7 @@ const ObjectNode = ({ value, path, schemaNode, removable, nullable, fieldName,
             </div>
             {(value && show) &&
                 <div className="panel-body">
-                    {getContent()}
+                    {getContent(value, path, schemaNode, renderNode, disabled)}
                 </div>
             }
         </div>
@@ -75,3 +54,25 @@ ObjectNode.propTypes = {
 };
 
 export default ObjectNode;
+
+function getContent(value, path, schemaNode, renderNode, disabled = {}) {
+    return schemaNode.properties.map((node, fieldName) => {
+        const p = Util.updatePath(path, fieldName);
+        return <React.Fragment key={p}>
+            {renderNode({
+                value: value[fieldName],
+                path: p,
+                parentType: "object",
+                disabled: disabled[fieldName],
+                nullable: isNullable(schemaNode, fieldName),
+                schemaNode: node,
+                fieldName,
+            })}
+        </React.Fragment>
+    })
+}
+
+function isNullable(schemaNode, fieldName) {
+    return !schemaNode.required
+        || !schemaNode.required.includes(fieldName);
+}
