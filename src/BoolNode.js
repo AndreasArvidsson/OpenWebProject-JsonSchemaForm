@@ -45,6 +45,7 @@ const BoolNode = ({ value, path, onChange, removable, onRemove, nullable, autoFo
         </div>
     );
 };
+
 BoolNode.propTypes = {
     value: PropTypes.bool,
     path: PropTypes.string.isRequired,
@@ -57,4 +58,5 @@ BoolNode.propTypes = {
     disabled: PropTypes.bool,
     texts: PropTypes.object
 };
-export default BoolNode;
+
+export default React.memo(BoolNode);

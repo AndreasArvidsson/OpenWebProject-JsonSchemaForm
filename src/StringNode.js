@@ -22,6 +22,7 @@ const StringNode = ({ value, path, onChange, onRemove, error, removable, autoFoc
         </div>
     );
 };
+
 StringNode.propTypes = {
     value: PropTypes.string,
     path: PropTypes.string.isRequired,
@@ -32,4 +33,5 @@ StringNode.propTypes = {
     autoFocus: PropTypes.bool,
     disabled: PropTypes.bool
 };
-export default StringNode;
+
+export default React.memo(StringNode);

@@ -1,102 +1,87 @@
-import React, { useState } from "react";
+import React from "react";
 import ReactDOM from "react-dom";
 import "bootstrap/dist/css/bootstrap.css";
-import schema from "./schemaSample";
-import modelSample from "./modelSample";
 import _set from "lodash.set";
 import jsonSchema from "jsonschema";
 import JsonSchemaForm, { Util } from "../src/index.js";
 
-const m = {
-    value1: "aasdassad",
-    // value2: "as"
+const instanceSample = {
+    name: "Lala"
 };
-const s = {
+
+const schema = {
     type: "object",
-    // allOf: [
-    //     {
-    //         required: ["value1"]
-    //     },
-    //     {
-    //         required: ["value2"]
-    //     }
-    // ],
-    
-    // dependencies: {
-    //     value:    ["value2"]
-    // },
     properties: {
-        value1: {
-            type: "string",
-            const: 6
-            // maxLength: 2,
-            // pattern: "\\d"
-        },
-        value2: {
-            type: "string",
-            // maxLength: 2,
-            // pattern: "\\d"
+        name: {
+            type: "string"
         }
     }
 };
 
-const validation = jsonSchema.validate(m, s);
-console.log(JSON.stringify(validation.errors, undefined, 4));
+for (let i = 0; i < 2; ++i) {
+    const name = "val" + i;
+    schema.properties[name] = {
+        type: "boolean"
+    }
+    instanceSample[name] = true;
+}
 
-console.log("test.js")
-/* eslint-disable react/prop-types */ //TODO
+class App extends React.Component {
 
-const App = () => {
-    const [model, setModel] = useState(modelSample);
-    const [errors, setErrors] = useState(getErrors(modelSample));
-
-    function getErrors(model) {
-        const validation = jsonSchema.validate(model, schema);
-        return Util.parseJsonValidation(validation);
+    constructor() {
+        super();
+        this.state = {
+            instance: instanceSample,
+            errors: {}
+        };
+        this.setInstance = this.setInstance.bind(this);
+        this.onChange = this.onChange.bind(this);
+        this.onRemove = this.onRemove.bind(this);
+        this.onRender = this.onRender.bind(this);
     }
 
-    const onChange = (path, value) => {
-        console.log(path, value);
-        const newModel = { ...model };
-        if (path.startsWith("selectionExcludes")) {
-            SelectionExcludes.onChange(newModel, path, value)
-        }
-        else {
-            _set(newModel, path, value);
-        }
-        setErrors(getErrors(newModel));
-        setModel(newModel);
+    setInstance(newInstance) {
+        const validation = jsonSchema.validate(newInstance, schema);
+        this.setState({
+            instance: newInstance,
+            errors: Util.parseJsonValidation(validation)
+        });
     }
 
-    const onRemove = (path) => {
-        const newModel = { ...model };
-        Util.remove(newModel, path);
-        setErrors(getErrors(newModel));
-        setModel(newModel);
+    onChange(path, value) {
+        const newInstance = { ...this.state.instance };
+        _set(newInstance, path, value);
+        this.setInstance(newInstance);
     }
 
-    const onRender = (props, defaultRenderMethod) => {
+    onRemove(path) {
+        const newInstance = { ...this.state.instance };
+        Util.remove(newInstance, path);
+        this.setInstance(newInstance);
+    }
+
+    onRender(props, defaultRenderMethod) {
         if (props.path === "name") {
             return defaultRenderMethod({ ...props, disabled: true })
-        }
-        if (props.path === "selectionExcludes") {
-            return <SelectionExcludes {...props} defaultRenderMethod={defaultRenderMethod} />
         }
         return defaultRenderMethod(props);
     }
 
-    return (
-        <JsonSchemaForm
-            schema={schema}
-            model={model}
-            onChange={onChange}
-            onRemove={onRemove}
-            onRender={onRender}
-            errors={errors}
-            texts={{ boolYes: "Ja", boolNo: "Nej", boolNull: "Apa" }}
-        />
-    );
+    render() {
+        return (
+            <JsonSchemaForm
+                schema={schema}
+                instance={this.state.instance}
+                errors={this.state.errors}
+                onChange={this.onChange}
+                onRemove={this.onRemove}
+                onRender={this.onRender}
+                texts={{ boolYes: "Yar", boolNo: "Nay", boolNull: "Doom" }}
+            />
+        );
+    }
 }
+
 
 ReactDOM.render(
     <div>

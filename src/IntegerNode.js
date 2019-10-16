@@ -25,6 +25,7 @@ const IntegerNode = ({ value, path, onChange, onRemove, error, removable, autoFo
         </div>
     );
 };
+
 IntegerNode.propTypes = {
     value: PropTypes.number,
     path: PropTypes.string.isRequired,
@@ -35,4 +36,5 @@ IntegerNode.propTypes = {
     autoFocus: PropTypes.bool,
     disabled: PropTypes.bool
 };
-export default IntegerNode;
+
+export default React.memo(IntegerNode);

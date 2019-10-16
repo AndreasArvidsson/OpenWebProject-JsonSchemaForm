@@ -25,6 +25,7 @@ const NumberNode = ({ value, path, onChange, onRemove, error, removable, autoFoc
         </div>
     );
 };
+
 NumberNode.propTypes = {
     value: PropTypes.number,
     path: PropTypes.string.isRequired,
@@ -35,4 +36,5 @@ NumberNode.propTypes = {
     autoFocus: PropTypes.bool,
     disabled: PropTypes.bool
 };
-export default NumberNode;
+
+export default React.memo(NumberNode);

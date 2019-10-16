@@ -16,16 +16,29 @@ import BoolNode from "./BoolNode";
 import Row from "./Row";
 import Title from "./Title";
 
-const JsonSchemaForm = ({ schema, instance, onChange, onRemove, onRender, errors = {}, texts = {} }) => {
-    const getNew = schemaNode => Util.getNew(schema, schemaNode);
-    let autoFocus = true;
+class JsonSchemaForm extends React.PureComponent {
 
-    const getNode = (nodeProps) => {
+    constructor(props) {
+        super(props);
+        this.getNew = schemaNode => Util.getNew(props.schema, schemaNode);
+        this.autoFocus = true;
+        this.schema = props.schema;
+        this.texts = props.texts || {};
+        this.getNode = this.getNode.bind(this);
+        this.renderNode = this.renderNode.bind(this);
+        this.defaultRenderMethod = this.defaultRenderMethod.bind(this);
+        this.applyAutoFocus = this.applyAutoFocus.bind(this);
+        this.onRender = props.onRender;
+        this.onChange = props.onChange;
+        this.onRemove = props.onRemove;
+    }
+
+    getNode (nodeProps) {
         if (nodeProps.schemaNode.enum || (!nodeProps.schemaNode.type && nodeProps.schemaNode.oneOf)) {
             return <EnumNode {...nodeProps}
-                onChange={onChange}
-                onRemove={onRemove}
-                texts={texts}
+                onChange={this.onChange}
+                onRemove={this.onRemove}
+                texts={this.texts}
             />
         }
         const type = Util.getType(nodeProps.schemaNode);
@@ -33,61 +46,61 @@ const JsonSchemaForm = ({ schema, instance, onChange, onRemove, onRender, errors
             case "object":
                 return <ObjectNode 
                     {...nodeProps}
-                    onChange={onChange}
-                    onRemove={onRemove}
-                    renderNode={renderNode}
+                    onChange={this.onChange}
+                    onRemove={this.onRemove}
+                    renderNode={this.renderNode}
                 />
             case "array":
                 return <ArrayNode 
                     {...nodeProps}
-                    onChange={onChange}
-                    onRemove={onRemove}
-                    renderNode={renderNode}
-                    getNew={getNew}
+                    onChange={this.onChange}
+                    onRemove={this.onRemove}
+                    renderNode={this.renderNode}
+                    getNew={this.getNew}
                 />
             case "string":
                 return <StringNode 
                     {...nodeProps}
-                    onChange={onChange}
-                    onRemove={onRemove}
+                    onChange={this.onChange}
+                    onRemove={this.onRemove}
                 />
             case "boolean":
                 return <BoolNode 
                     {...nodeProps}
-                    onChange={onChange}
-                    onRemove={onRemove}
-                    texts={texts}
+                    onChange={this.onChange}
+                    onRemove={this.onRemove}
+                    texts={this.texts}
                 />
             case "number":
                 return <NumberNode 
                     {...nodeProps}
-                    onChange={onChange}
-                    onRemove={onRemove}
+                    onChange={this.onChange}
+                    onRemove={this.onRemove}
                 />
             case "integer":
                 return <IntegerNode
                     {...nodeProps}
-                    onChange={onChange}
-                    onRemove={onRemove}
+                    onChange={this.onChange}
+                    onRemove={this.onRemove}
                 />
             default:
                 console.warn("Unknown type ", nodeProps.schemaNode);
                 return <div>Unknown type {type}</div>
         }
-    };
+    }
 
-    const applyAutoFocus = (nodeProps) => {
-        if (autoFocus && !nodeProps.disabled
+    applyAutoFocus (nodeProps) {
+        if (this.autoFocus && !nodeProps.disabled
             && nodeProps.schemaNode.type !== "object"
             && nodeProps.schemaNode.type !== "array") {
-            autoFocus = false;
+            this.autoFocus = false;
             nodeProps.autoFocus = true;
         }
     }
 
-    const defaultRenderMethod = (nodeProps) => {
-        applyAutoFocus(nodeProps);
-        const node = getNode(nodeProps);
+    defaultRenderMethod (nodeProps) {
+        this.applyAutoFocus(nodeProps);
+        const node = this.getNode(nodeProps);
         if (nodeProps.parentType === "object" && Util.shouldAddRow(nodeProps.schemaNode)) {
             return <Row
                 left={<Title schemaNode={nodeProps.schemaNode} fieldName={nodeProps.fieldName} />}
@@ -95,27 +108,30 @@ const JsonSchemaForm = ({ schema, instance, onChange, onRemove, onRender, errors
             />
         }
         return node;
-    };
+    }
 
-    const renderNode = (nodeProps) => {
+    renderNode (nodeProps) {
         nodeProps = {
             ...nodeProps,
-            error: errors[nodeProps.path],
-            schemaNode: Util.updateRef(schema, nodeProps.schemaNode)
+            error: this.props.errors ? this.props.errors[nodeProps.path] : null,
+            schemaNode: Util.updateRef(this.schema, nodeProps.schemaNode)
         };
-        if (onRender) {
-            return onRender(nodeProps, defaultRenderMethod);
+        if (this.onRender) {
+            return this.onRender(nodeProps, this.defaultRenderMethod);
         }
-        return defaultRenderMethod(nodeProps);
-    };
+        return this.defaultRenderMethod(nodeProps);
+    }
 
     //Render root document.
-    return (
-        <div className="json-schema-form">
-            {renderNode({ value: instance, schemaNode: schema, fieldName: "", path: "" })}
-        </div>
-    );
-};
+    render() {
+        return (
+            <div className="json-schema-form">
+                {this.renderNode({ value: this.props.instance, schemaNode: this.schema, fieldName: "", path: "" })}
+            </div>
+        );
+    }
+}
+
 JsonSchemaForm.propTypes = {
     schema: PropTypes.object.isRequired,
     instance: PropTypes.object.isRequired,
@@ -125,7 +141,9 @@ JsonSchemaForm.propTypes = {
     errors: PropTypes.object,
     texts: PropTypes.object
 };
+
 export default JsonSchemaForm;
+
 export {
     ObjectNode, ArrayNode, StringNode, EnumNode,
     NumberNode, IntegerNode, BoolNode,

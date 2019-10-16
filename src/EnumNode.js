@@ -26,6 +26,7 @@ const EnumNode = ({ value, path, schemaNode, onChange, error, removable, onRemov
         </div>
     );
 };
+
 EnumNode.propTypes = {
     value: PropTypes.string,
     path: PropTypes.string.isRequired,
@@ -39,7 +40,8 @@ EnumNode.propTypes = {
     disabled: PropTypes.bool,
     texts: PropTypes.object
 };
-export default EnumNode;
+
+export default React.memo(EnumNode);
 
 const defaultNullText = "Choose";
 

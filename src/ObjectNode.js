@@ -9,9 +9,7 @@ import ObjectTitle from "./ObjectTitle";
 
 const ObjectNode = ({ value, path, schemaNode, removable, nullable, fieldName, 
     renderNode, onChange, onRemove, error, disabled = {} }) => {
-    
     const [show, setShow] = useState(true);
-    const addNew = () => onChange(path, {});
 
     const getContent = () => {
         return schemaNode.properties.map((schemaNode, fieldName) => {
@@ -49,7 +47,7 @@ const ObjectNode = ({ value, path, schemaNode, removable, nullable, fieldName,
                 <span className="input-group">
                     <ObjectTitle disabled={!value} show={show} setShow={setShow} schemaNode={schemaNode} fieldName={fieldName} />
                     <ValidationIcon error={error} />
-                    {!value && <AddIcon onClick={addNew} />}
+                    {!value && <AddIcon onClick={() => onChange(path, {})} />}
                     {(value && (removable || nullable)) && <RemoveIcon path={path} onClick={onRemove} />}
                 </span>
             </div>
@@ -61,6 +59,7 @@ const ObjectNode = ({ value, path, schemaNode, removable, nullable, fieldName,
         </div>
     );
 };
+
 ObjectNode.propTypes = {
     value: PropTypes.object,
     path: PropTypes.string.isRequired,
@@ -74,4 +73,5 @@ ObjectNode.propTypes = {
     disabled: PropTypes.object,
     nullable: PropTypes.bool
 };
+
 export default ObjectNode;
