@@ -13,13 +13,6 @@ const Util = {
         return schemaNode;
     },
 
-    getType: function (schemaNode) {
-        if (!schemaNode.type) {
-            return null;
-        }
-        return schemaNode.type.split(",")[0].trim();
-    },
-
     shouldAddRow: function (schemaNode) {
         if (schemaNode.type) {
             return !schemaNode.type.includes("array") && !schemaNode.type.includes("object");

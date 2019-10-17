@@ -8,8 +8,8 @@ import BadgeIcon from "./BadgeIcon";
 import ObjectTitle from "./ObjectTitle";
 
 const ArrayNode = ({ value, path, schemaNode, removable, nullable, fieldName,
-    renderNode, getNew, onChange, onRemove, error, disabled = {} }) => {
-    const [show, setShow] = useState(true);
+    renderNode, getNew, onChange, onRemove, error, collapse = false, disabled = {} }) => {
+    const [show, setShow] = useState(!collapse);
 
     return (
         <div className={"panel panel-" + (value ? "default" : "warning")}>
@@ -65,6 +65,7 @@ ArrayNode.propTypes = {
     onRemove: PropTypes.func.isRequired,
     error: PropTypes.string,
     disabled: PropTypes.object,
-    nullable: PropTypes.bool
+    nullable: PropTypes.bool,
+    collapse: PropTypes.bool
 };
 export default ArrayNode;

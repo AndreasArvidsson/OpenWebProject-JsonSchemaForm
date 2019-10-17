@@ -8,8 +8,8 @@ import RemoveIcon from "./RemoveIcon";
 import ObjectTitle from "./ObjectTitle";
 
 const ObjectNode = ({ value, path, schemaNode, removable, nullable, fieldName,
-    renderNode, onChange, onRemove, error, disabled = {} }) => {
-    const [show, setShow] = useState(true);
+    renderNode, onChange, onRemove, error, collapse = false, disabled = {} }) => {
+    const [show, setShow] = useState(!collapse);
 
     //Root node. Dont add panel.
     if (!path) {
@@ -50,7 +50,8 @@ ObjectNode.propTypes = {
     onRemove: PropTypes.func.isRequired,
     error: PropTypes.string,
     disabled: PropTypes.object,
-    nullable: PropTypes.bool
+    nullable: PropTypes.bool,
+    collapse: PropTypes.bool
 };
 
 export default ObjectNode;

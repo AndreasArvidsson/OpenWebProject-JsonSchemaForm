@@ -41,14 +41,14 @@ class JsonSchemaForm extends React.PureComponent {
                 texts={this.texts}
             />
         }
-        const type = Util.getType(nodeProps.schemaNode);
-        switch (type) {
+        switch (nodeProps.schemaNode.type) {
             case "object":
                 return <ObjectNode 
                     {...nodeProps}
                     onChange={this.onChange}
                     onRemove={this.onRemove}
                     renderNode={this.renderNode}
+                    collapse={this.props.collapsePanels}
                 />
             case "array":
                 return <ArrayNode 
@@ -57,6 +57,7 @@ class JsonSchemaForm extends React.PureComponent {
                     onRemove={this.onRemove}
                     renderNode={this.renderNode}
                     getNew={this.getNew}
+                    collapse={this.props.collapsePanels}
                 />
             case "string":
                 return <StringNode 
@@ -85,7 +86,7 @@ class JsonSchemaForm extends React.PureComponent {
                 />
             default:
                 console.warn("Unknown type ", nodeProps.schemaNode);
-                return <div>Unknown type {type}</div>
+                return <div>Unknown type {nodeProps.schemaNode.type}</div>
         }
     }
 
@@ -139,7 +140,8 @@ JsonSchemaForm.propTypes = {
     onRemove: PropTypes.func.isRequired,
     onRender: PropTypes.func,
     errors: PropTypes.object,
-    texts: PropTypes.object
+    texts: PropTypes.object,
+    collapsePanels: PropTypes.bool
 };
 
 export default JsonSchemaForm;
